@@ -1,3 +1,9 @@
+# About This Fork
+
+This fork adds back armv6 support, which is necessary for older devices.
+
+See the `armv6-support` branch.
+
 Computer vision with iOS: Building an OpenCV framework
 ------------------------------------------------------
 
