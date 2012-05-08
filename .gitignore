@@ -5,3 +5,5 @@ tmp
 opencv
 project.xcworkspace
 xcuserdata
+.DS_Store
+**/.DS_Store
