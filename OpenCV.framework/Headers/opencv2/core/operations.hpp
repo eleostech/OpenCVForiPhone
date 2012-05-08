@@ -52,7 +52,9 @@
 #ifdef __cplusplus
 
 /////// exchange-add operation for atomic operations on reference counters ///////
-#ifdef __GNUC__
+#if defined __INTEL_COMPILER && !(defined WIN32 || defined _WIN32)   // atomic increment on the linux version of the Intel(tm) compiler
+  #define CV_XADD(addr,delta) _InterlockedExchangeAdd(const_cast<void*>(reinterpret_cast<volatile void*>(addr)), delta)
+#elif defined __GNUC__
     
   #if __GNUC__*10 + __GNUC_MINOR__ >= 42
 
@@ -74,17 +76,19 @@
   #endif
     
 #elif defined WIN32 || defined _WIN32
-  #define WIN32_MEAN_AND_LEAN 
+  #define WIN32_MEAN_AND_LEAN
+  #ifndef _WIN32_WINNT           // This is needed for the declaration of TryEnterCriticalSection in winbase.h with Visual Studio 2005 (and older?)
+    #define _WIN32_WINNT 0x0400  // http://msdn.microsoft.com/en-us/library/ms686857(VS.85).aspx
+  #endif
   #include <windows.h>
   #undef min
   #undef max
   #undef abs
   #define CV_XADD(addr,delta) InterlockedExchangeAdd((long volatile*)(addr), (delta))
-#else
 
+#else
   static inline int CV_XADD(int* addr, int delta)
-  { int tmp = *addr; *addr += delta; return tmp; }
-    
+  { int tmp = *addr; *addr += delta; return tmp; }    
 #endif
 
 #include <limits>
@@ -356,7 +360,7 @@ template<typename _Tp, int m, int n> inline double Matx<_Tp, m, n>::ddot(const M
 
 
 template<typename _Tp, int m, int n> inline
-Matx<_Tp,m,n> Matx<_Tp,m,n>::diag(const Matx<_Tp,MIN(m,n),1>& d)
+Matx<_Tp,m,n> Matx<_Tp,m,n>::diag(const typename Matx<_Tp,m,n>::diag_type& d)
 {
     Matx<_Tp,m,n> M;
     for(int i = 0; i < MIN(m,n); i++)
@@ -432,7 +436,7 @@ Matx<_Tp, m, 1> Matx<_Tp, m, n>::col(int j) const
 
     
 template<typename _Tp, int m, int n> inline
-Matx<_Tp, MIN(m,n), 1> Matx<_Tp, m, n>::diag() const
+typename Matx<_Tp, m, n>::diag_type Matx<_Tp, m, n>::diag() const
 {
     diag_type d;
     for( int i = 0; i < MIN(m, n); i++ )
@@ -634,6 +638,14 @@ Matx<_Tp, m, n> operator * (const Matx<_Tp, m, l>& a, const Matx<_Tp, l, n>& b)
 }
 
     
+template<typename _Tp, int m, int n> static inline
+Vec<_Tp, m> operator * (const Matx<_Tp, m, n>& a, const Vec<_Tp, n>& b)
+{
+    Matx<_Tp, m, 1> c(a, b, Matx_MatMulOp());
+    return reinterpret_cast<const Vec<_Tp, m>&>(c);
+}
+    
+    
 template<typename _Tp> static inline
 Point_<_Tp> operator * (const Matx<_Tp, 2, 2>& a, const Point_<_Tp>& b)
 {
@@ -664,14 +676,23 @@ Matx<_Tp, 4, 1> operator * (const Matx<_Tp, 4, 4>& a, const Point3_<_Tp>& b)
     return a*Matx<_Tp, 4, 1>(b.x, b.y, b.z, 1);
 }    
 
-    
+
 template<typename _Tp> static inline
 Scalar operator * (const Matx<_Tp, 4, 4>& a, const Scalar& b)
 {
-    return Scalar(a*Matx<_Tp, 4, 1>(b[0],b[1],b[2],b[3]));
-}    
-    
+    Matx<double, 4, 1> c(Matx<double, 4, 4>(a), b, Matx_MatMulOp());
+    return reinterpret_cast<const Scalar&>(c);
+}
 
+    
+static inline
+Scalar operator * (const Matx<double, 4, 4>& a, const Scalar& b)
+{
+    Matx<double, 4, 1> c(a, b, Matx_MatMulOp());
+    return reinterpret_cast<const Scalar&>(c);
+}
+
+    
 template<typename _Tp, int m, int n> inline
 Matx<_Tp, m, n> Matx<_Tp, m, n>::mul(const Matx<_Tp, m, n>& a) const
 {
@@ -861,9 +882,9 @@ template<typename _Tp> struct CV_EXPORTS Matx_FastSolveOp<_Tp, 2, 1>
 template<typename _Tp> struct CV_EXPORTS Matx_FastSolveOp<_Tp, 3, 1>
 {
     bool operator()(const Matx<_Tp, 3, 3>& a, const Matx<_Tp, 3, 1>& b,
-                    Matx<_Tp, 3, 1>& x, int method) const
+                    Matx<_Tp, 3, 1>& x, int) const
     {
-        _Tp d = determinant(a);
+        _Tp d = (_Tp)determinant(a);
         if( d == 0 )
             return false;
         d = 1/d;
@@ -899,6 +920,12 @@ Matx<_Tp, n, l> Matx<_Tp, m, n>::solve(const Matx<_Tp, m, l>& rhs, int method) c
     return ok ? x : Matx<_Tp, n, l>::zeros();
 }
 
+template<typename _Tp, int m, int n> inline    
+Vec<_Tp, n> Matx<_Tp, m, n>::solve(const Vec<_Tp, m>& rhs, int method) const
+{
+    Matx<_Tp, n, 1> x = solve(reinterpret_cast<const Matx<_Tp, m, 1>&>(rhs), method);
+    return reinterpret_cast<Vec<_Tp, n>&>(x);
+}
     
 template<typename _Tp, typename _AccTp> static inline
 _AccTp normL2Sqr(const _Tp* a, int n)
@@ -954,7 +981,7 @@ _AccTp normL2Sqr(const _Tp* a, const _Tp* b, int n)
 {
     _AccTp s = 0;
     int i= 0;
- #if CV_ENABLE_UNROLLED
+#if CV_ENABLE_UNROLLED
     for(; i <= n - 4; i += 4 )
     {
         _AccTp v0 = a[i] - b[i], v1 = a[i+1] - b[i+1], v2 = a[i+2] - b[i+2], v3 = a[i+3] - b[i+3];
@@ -963,7 +990,7 @@ _AccTp normL2Sqr(const _Tp* a, const _Tp* b, int n)
 #endif
     for( ; i < n; i++ )
     {
-        _AccTp v = a[i] - b[i];
+        _AccTp v = (_AccTp)(a[i] - b[i]);
         s += v*v;
     }
     return s;
@@ -994,7 +1021,7 @@ _AccTp normL1(const _Tp* a, const _Tp* b, int n)
 {
     _AccTp s = 0;
     int i= 0;
- #if CV_ENABLE_UNROLLED
+#if CV_ENABLE_UNROLLED
     for(; i <= n - 4; i += 4 )
     {
         _AccTp v0 = a[i] - b[i], v1 = a[i+1] - b[i+1], v2 = a[i+2] - b[i+2], v3 = a[i+3] - b[i+3];
@@ -1003,7 +1030,7 @@ _AccTp normL1(const _Tp* a, const _Tp* b, int n)
 #endif
     for( ; i < n; i++ )
     {
-        _AccTp v = a[i] - b[i];
+        _AccTp v = (_AccTp)(a[i] - b[i]);
         s += std::abs(v);
     }
     return s;
@@ -2267,7 +2294,7 @@ public:
     { set((_Tp*)&vec.val[0], n, true); }    
     
     Vector(const std::vector<_Tp>& vec, bool _copyData=false)
-    { set((_Tp*)&vec[0], vec.size(), _copyData); }    
+    { set(!vec.empty() ? (_Tp*)&vec[0] : 0, vec.size(), _copyData); }    
     
     Vector(const Vector& d) { *this = d; }
     
@@ -2435,14 +2462,17 @@ dot(const Vector<_Tp>& v1, const Vector<_Tp>& v2)
     assert(v1.size() == v2.size());
 
     _Tw s = 0;
-    const _Tp *ptr1 = &v1[0], *ptr2 = &v2[0];
- #if CV_ENABLE_UNROLLED
-    for(; i <= n - 4; i += 4 )
-        s += (_Tw)ptr1[i]*ptr2[i] + (_Tw)ptr1[i+1]*ptr2[i+1] +
-            (_Tw)ptr1[i+2]*ptr2[i+2] + (_Tw)ptr1[i+3]*ptr2[i+3];
-#endif
-    for( ; i < n; i++ )
-        s += (_Tw)ptr1[i]*ptr2[i];
+    if( n > 0 )
+    {
+        const _Tp *ptr1 = &v1[0], *ptr2 = &v2[0];
+     #if CV_ENABLE_UNROLLED
+        for(; i <= n - 4; i += 4 )
+            s += (_Tw)ptr1[i]*ptr2[i] + (_Tw)ptr1[i+1]*ptr2[i+1] +
+                (_Tw)ptr1[i+2]*ptr2[i+2] + (_Tw)ptr1[i+3]*ptr2[i+3];
+    #endif
+        for( ; i < n; i++ )
+            s += (_Tw)ptr1[i]*ptr2[i];
+    }
     return s;
 }
     
@@ -2824,11 +2854,10 @@ public:
     {
         int _fmt = DataType<_Tp>::fmt;
         char fmt[] = { (char)((_fmt>>8)+'1'), (char)_fmt, '\0' };
-        fs->writeRaw( string(fmt), (uchar*)&vec[0], vec.size()*sizeof(_Tp) );
+        fs->writeRaw( string(fmt), !vec.empty() ? (uchar*)&vec[0] : 0, vec.size()*sizeof(_Tp) );
     }
     FileStorage* fs;
 };
-
 
 template<typename _Tp> static inline void write( FileStorage& fs, const vector<_Tp>& vec )
 {
@@ -2836,17 +2865,16 @@ template<typename _Tp> static inline void write( FileStorage& fs, const vector<_
     w(vec);
 }
 
-template<typename _Tp> static inline FileStorage&
-operator << ( FileStorage& fs, const vector<_Tp>& vec )
+template<typename _Tp> static inline void write( FileStorage& fs, const string& name,
+                                                const vector<_Tp>& vec )
 {
-    VecWriterProxy<_Tp, DataType<_Tp>::generic_type == 0> w(&fs);
-    w(vec);
-    return fs;
-}
-
+    WriteStructContext ws(fs, name, CV_NODE_SEQ+(DataType<_Tp>::fmt != 0 ? CV_NODE_FLOW : 0));
+    write(fs, vec);
+}    
+    
 CV_EXPORTS_W void write( FileStorage& fs, const string& name, const Mat& value );
 CV_EXPORTS void write( FileStorage& fs, const string& name, const SparseMat& value );
-
+    
 template<typename _Tp> static inline FileStorage& operator << (FileStorage& fs, const _Tp& value)
 {
     if( !fs.isOpened() )
@@ -2883,7 +2911,7 @@ inline size_t FileNode::size() const
 {
     int t = type();
     return t == MAP ? ((CvSet*)node->data.map)->active_count :
-        t == SEQ ? node->data.seq->total : node != 0;
+        t == SEQ ? node->data.seq->total : (size_t)!isNone();
 }
 
 inline CvFileNode* FileNode::operator *() { return (CvFileNode*)node; }
@@ -2946,7 +2974,7 @@ static inline void read(const FileNode& node, string& value, const string& defau
 }
 
 CV_EXPORTS_W void read(const FileNode& node, Mat& mat, const Mat& default_mat=Mat() );
-CV_EXPORTS void read(const FileNode& node, SparseMat& mat, const SparseMat& default_mat=SparseMat() );    
+CV_EXPORTS void read(const FileNode& node, SparseMat& mat, const SparseMat& default_mat=SparseMat() );
     
 inline FileNode::operator int() const
 {
@@ -3001,10 +3029,10 @@ public:
         size_t remaining = it->remaining, cn = DataType<_Tp>::channels;
         int _fmt = DataType<_Tp>::fmt;
         char fmt[] = { (char)((_fmt>>8)+'1'), (char)_fmt, '\0' };
-		size_t remaining1 = remaining/cn;
-		count = count < remaining1 ? count : remaining1;
+        size_t remaining1 = remaining/cn;
+        count = count < remaining1 ? count : remaining1;
         vec.resize(count);
-        it->readRaw( string(fmt), (uchar*)&vec[0], count*sizeof(_Tp) );
+        it->readRaw( string(fmt), !vec.empty() ? (uchar*)&vec[0] : 0, count*sizeof(_Tp) );
     }
     FileNodeIterator* it;
 };
@@ -3017,9 +3045,15 @@ read( FileNodeIterator& it, vector<_Tp>& vec, size_t maxCount=(size_t)INT_MAX )
 }
 
 template<typename _Tp> static inline void
-read( FileNode& node, vector<_Tp>& vec, const vector<_Tp>& default_value=vector<_Tp>() )
+read( const FileNode& node, vector<_Tp>& vec, const vector<_Tp>& default_value=vector<_Tp>() )
 {
-    read( node.begin(), vec );
+    if(!node.node)
+        vec = default_value;
+    else
+    {
+        FileNodeIterator it = node.begin();
+        read( it, vec );
+    }
 }
     
 inline FileNodeIterator FileNode::begin() const
@@ -3655,12 +3689,13 @@ public:
     static int isInstance(const void* ptr)
     {
         static _ClsName dummy;
+        static void* dummyp = &dummy;
         union
         {
             const void* p;
             const void** pp;
         } a, b;
-        a.p = &dummy;
+        a.p = dummyp;
         b.p = ptr;
         return *a.pp == *b.pp;
     }
@@ -3821,29 +3856,6 @@ template<typename _Tp> inline typename ParamType<_Tp>::member_type Algorithm::ge
     return value;
 }    
     
-template<typename _Tp> inline void Algorithm::set(const string& name,
-                                                  typename ParamType<_Tp>::const_param_type value)
-{
-    info()->set(this, name.c_str(), ParamType<_Tp>::type, &value);
-}
-
-template<typename _Tp> inline void Algorithm::set(const char* name,
-                                                  typename ParamType<_Tp>::const_param_type value)
-{
-    info()->set(this, name, ParamType<_Tp>::type, &value);
-}
-
-template<typename _Tp> inline void AlgorithmInfo::addParam(const Algorithm* algo, const char* name,
-                                                    const typename ParamType<_Tp>::member_type& value,
-                                                    bool readOnly, 
-                                                    typename ParamType<_Tp>::member_type (Algorithm::*getter)(),
-                                                    void (Algorithm::*setter)(typename ParamType<_Tp>::const_param_type),
-                                                    const string& help)
-{
-    addParam_(algo, name, ParamType<_Tp>::type, &value, readOnly,
-              (Algorithm::Getter)getter, (Algorithm::Setter)setter, help);
-}
-
 }
 
 #endif // __cplusplus

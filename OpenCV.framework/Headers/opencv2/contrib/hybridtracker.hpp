@@ -66,7 +66,6 @@ struct CV_EXPORTS CvMotionModel
 	}
 
 	float low_pass_gain; 	// low pass gain
-	CvEMParams em_params;	// EM parameters
 };
 
 // Mean Shift Tracker parameters for specifying use of HSV channel and CamShift parameters.
@@ -109,7 +108,6 @@ struct CV_EXPORTS CvHybridTrackerParams
 	float ms_tracker_weight;
 	CvFeatureTrackerParams ft_params;
 	CvMeanShiftTrackerParams ms_params;
-	CvEMParams em_params;
 	int motion_model;
 	float low_pass_gain;
 };
@@ -145,9 +143,8 @@ public:
 class CV_EXPORTS CvFeatureTracker
 {
 private:
-	FeatureDetector* detector;
-	DescriptorExtractor* descriptor;
-	DescriptorMatcher* matcher;
+	Ptr<Feature2D> dd;
+	Ptr<DescriptorMatcher> matcher;
 	vector<DMatch> matches;
 
 	Mat prev_image;
@@ -183,7 +180,6 @@ private:
 
 	CvMat* samples;
 	CvMat* labels;
-	CvEM em_model;
 
 	Rect prev_window;
 	Point2f prev_center;

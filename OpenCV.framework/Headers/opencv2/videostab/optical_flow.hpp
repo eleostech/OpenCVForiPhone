@@ -7,11 +7,11 @@
 //  copy or use the software.
 //
 //
-//                          License Agreement
+//                           License Agreement
 //                For Open Source Computer Vision Library
 //
 // Copyright (C) 2000-2008, Intel Corporation, all rights reserved.
-// Copyright (C) 2009, Willow Garage Inc., all rights reserved.
+// Copyright (C) 2009-2011, Willow Garage Inc., all rights reserved.
 // Third party copyrights are property of their respective owners.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -40,67 +40,81 @@
 //
 //M*/
 
-#ifndef __OPENCV_STITCHING_EXPOSURE_COMPENSATE_HPP__
-#define __OPENCV_STITCHING_EXPOSURE_COMPENSATE_HPP__
+#ifndef __OPENCV_VIDEOSTAB_OPTICAL_FLOW_HPP__
+#define __OPENCV_VIDEOSTAB_OPTICAL_FLOW_HPP__
 
 #include <OpenCV/opencv2/core/core.hpp>
+#include <OpenCV/opencv2/opencv_modules.hpp>
 
-namespace cv {
-namespace detail {
+#if HAVE_OPENCV_GPU
+#  include "opencv2/gpu/gpu.hpp"
+#endif
 
-class CV_EXPORTS ExposureCompensator
+namespace cv
+{
+namespace videostab
+{
+
+class CV_EXPORTS ISparseOptFlowEstimator
 {
 public:
-    virtual ~ExposureCompensator() {}
-
-    enum { NO, GAIN, GAIN_BLOCKS };
-    static Ptr<ExposureCompensator> createDefault(int type);
-
-    void feed(const std::vector<Point> &corners, const std::vector<Mat> &images,
-              const std::vector<Mat> &masks);
-    virtual void feed(const std::vector<Point> &corners, const std::vector<Mat> &images,
-                      const std::vector<std::pair<Mat,uchar> > &masks) = 0;
-    virtual void apply(int index, Point corner, Mat &image, const Mat &mask) = 0;
+    virtual ~ISparseOptFlowEstimator() {}
+    virtual void run(
+            InputArray frame0, InputArray frame1, InputArray points0, InputOutputArray points1,
+            OutputArray status, OutputArray errors) = 0;
 };
 
-
-class CV_EXPORTS NoExposureCompensator : public ExposureCompensator
+class CV_EXPORTS IDenseOptFlowEstimator
 {
 public:
-    void feed(const std::vector<Point> &/*corners*/, const std::vector<Mat> &/*images*/,
-              const std::vector<std::pair<Mat,uchar> > &/*masks*/) {};
-    void apply(int /*index*/, Point /*corner*/, Mat &/*image*/, const Mat &/*mask*/) {};
+    virtual ~IDenseOptFlowEstimator() {}
+    virtual void run(
+            InputArray frame0, InputArray frame1, InputOutputArray flowX, InputOutputArray flowY,
+            OutputArray errors) = 0;
 };
 
-
-class CV_EXPORTS GainCompensator : public ExposureCompensator
+class CV_EXPORTS PyrLkOptFlowEstimatorBase
 {
 public:
-    void feed(const std::vector<Point> &corners, const std::vector<Mat> &images,
-              const std::vector<std::pair<Mat,uchar> > &masks);
-    void apply(int index, Point corner, Mat &image, const Mat &mask);
-    std::vector<double> gains() const;
+    PyrLkOptFlowEstimatorBase() { setWinSize(Size(21, 21)); setMaxLevel(3); }
 
+    void setWinSize(Size val) { winSize_ = val; }
+    Size winSize() const { return winSize_; }
+
+    void setMaxLevel(int val) { maxLevel_ = val; }
+    int maxLevel() const { return maxLevel_; }
+
+protected:
+    Size winSize_;
+    int maxLevel_;
+};
+
+class CV_EXPORTS SparsePyrLkOptFlowEstimator
+        : public PyrLkOptFlowEstimatorBase, public ISparseOptFlowEstimator
+{
+public:
+    virtual void run(
+            InputArray frame0, InputArray frame1, InputArray points0, InputOutputArray points1,
+            OutputArray status, OutputArray errors);
+};
+
+#if HAVE_OPENCV_GPU
+class CV_EXPORTS DensePyrLkOptFlowEstimatorGpu
+        : public PyrLkOptFlowEstimatorBase, public IDenseOptFlowEstimator
+{
+public:
+    DensePyrLkOptFlowEstimatorGpu();
+
+    virtual void run(
+            InputArray frame0, InputArray frame1, InputOutputArray flowX, InputOutputArray flowY,
+            OutputArray errors);
 private:
-    Mat_<double> gains_;
+    gpu::PyrLKOpticalFlow optFlowEstimator_;
+    gpu::GpuMat frame0_, frame1_, flowX_, flowY_, errors_;
 };
+#endif
 
-
-class CV_EXPORTS BlocksGainCompensator : public ExposureCompensator
-{
-public:
-    BlocksGainCompensator(int bl_width = 32, int bl_height = 32) 
-            : bl_width_(bl_width), bl_height_(bl_height) {}
-    void feed(const std::vector<Point> &corners, const std::vector<Mat> &images,
-              const std::vector<std::pair<Mat,uchar> > &masks);
-    void apply(int index, Point corner, Mat &image, const Mat &mask);
-
-private:
-    int bl_width_, bl_height_;
-    std::vector<Mat_<float> > gain_maps_;
-};
-
-} // namespace detail
+} // namespace videostab
 } // namespace cv
 
-#endif // __OPENCV_STITCHING_EXPOSURE_COMPENSATE_HPP__
+#endif

@@ -597,6 +597,9 @@ CV_EXPORTS_W void accumulateProduct( InputArray src1, InputArray src2,
 CV_EXPORTS_W void accumulateWeighted( InputArray src, InputOutputArray dst,
                                       double alpha, InputArray mask=noArray() );
 
+//! computes PSNR image/video quality metric    
+CV_EXPORTS_W double PSNR(InputArray src1, InputArray src2);
+    
 CV_EXPORTS_W Point2d phaseCorrelate(InputArray src1, InputArray src2, InputArray window = noArray());
 CV_EXPORTS_W void createHanningWindow(OutputArray dst, Size winSize, int type);
     
@@ -620,13 +623,14 @@ CV_EXPORTS_W void adaptiveThreshold( InputArray src, OutputArray dst,
 
 //! smooths and downsamples the image
 CV_EXPORTS_W void pyrDown( InputArray src, OutputArray dst,
-                           const Size& dstsize=Size());
+                           const Size& dstsize=Size(), int borderType=BORDER_DEFAULT );
 //! upsamples and smoothes the image
 CV_EXPORTS_W void pyrUp( InputArray src, OutputArray dst,
-                         const Size& dstsize=Size());
+                         const Size& dstsize=Size(), int borderType=BORDER_DEFAULT );
 
 //! builds the gaussian pyramid using pyrDown() as a basic operation
-CV_EXPORTS void buildPyramid( InputArray src, OutputArrayOfArrays dst, int maxlevel );
+CV_EXPORTS void buildPyramid( InputArray src, OutputArrayOfArrays dst,
+                              int maxlevel, int borderType=BORDER_DEFAULT );
 
 //! corrects lens distortion for the given camera matrix and distortion coefficients
 CV_EXPORTS_W void undistort( InputArray src, OutputArray dst,
@@ -656,9 +660,9 @@ CV_EXPORTS_W Mat getDefaultNewCameraMatrix( InputArray cameraMatrix, Size imgsiz
                                             bool centerPrincipalPoint=false );
     
 //! returns points' coordinates after lens distortion correction
-CV_EXPORTS void undistortPoints( InputArray src, OutputArray dst,
-                                 InputArray cameraMatrix, InputArray distCoeffs,
-                                 InputArray R=noArray(), InputArray P=noArray());
+CV_EXPORTS_W void undistortPoints( InputArray src, OutputArray dst,
+                                   InputArray cameraMatrix, InputArray distCoeffs,
+                                   InputArray R=noArray(), InputArray P=noArray());
 
 template<> CV_EXPORTS void Ptr<CvHistogram>::delete_obj();
     
@@ -751,20 +755,16 @@ CV_EXPORTS_W void grabCut( InputArray img, InputOutputArray mask, Rect rect,
                            InputOutputArray bgdModel, InputOutputArray fgdModel,
                            int iterCount, int mode = GC_EVAL );
 
-//! the inpainting algorithm
 enum
 {
-    INPAINT_NS=CV_INPAINT_NS, // Navier-Stokes algorithm
-    INPAINT_TELEA=CV_INPAINT_TELEA // A. Telea algorithm
+    DIST_LABEL_CCOMP = 0,
+    DIST_LABEL_PIXEL = 1
 };
-
-//! restores the damaged image areas using one of the available intpainting algorithms
-CV_EXPORTS_W void inpaint( InputArray src, InputArray inpaintMask,
-                           OutputArray dst, double inpaintRange, int flags );
-
+    
 //! builds the discrete Voronoi diagram
 CV_EXPORTS_AS(distanceTransformWithLabels) void distanceTransform( InputArray src, OutputArray dst,
-                                     OutputArray labels, int distanceType, int maskSize );
+                                     OutputArray labels, int distanceType, int maskSize,
+                                     int labelType=DIST_LABEL_CCOMP );
 
 //! computes the distance transform map
 CV_EXPORTS_W void distanceTransform( InputArray src, OutputArray dst,
@@ -918,28 +918,96 @@ enum
     COLOR_BayerGB2GRAY = 87,
     COLOR_BayerRG2GRAY = 88,
     COLOR_BayerGR2GRAY = 89,
+
+    //YUV 4:2:0 formats family
+    COLOR_YUV2RGB_NV12 = 90,
+    COLOR_YUV2BGR_NV12 = 91,    
+    COLOR_YUV2RGB_NV21 = 92,
+    COLOR_YUV2BGR_NV21 = 93,
+    COLOR_YUV420sp2RGB = COLOR_YUV2RGB_NV21,
+    COLOR_YUV420sp2BGR = COLOR_YUV2BGR_NV21,
+
+    COLOR_YUV2RGBA_NV12 = 94,
+    COLOR_YUV2BGRA_NV12 = 95,
+    COLOR_YUV2RGBA_NV21 = 96,
+    COLOR_YUV2BGRA_NV21 = 97,
+    COLOR_YUV420sp2RGBA = COLOR_YUV2RGBA_NV21,
+    COLOR_YUV420sp2BGRA = COLOR_YUV2BGRA_NV21,
     
-    COLOR_YUV420i2RGB  = 90,
-    COLOR_YUV420i2BGR  = 91,
-    COLOR_YUV420sp2RGB = 92,
-    COLOR_YUV420sp2BGR = 93,
-
-    COLOR_YUV2RGB_NV12 = COLOR_YUV420i2RGB,
-    COLOR_YUV2BGR_NV12 = COLOR_YUV420i2BGR,
-    COLOR_YUV2RGB_NV21 = COLOR_YUV420sp2RGB,
-    COLOR_YUV2BGR_NV21 = COLOR_YUV420sp2BGR,
-
-    COLOR_YUV420i2RGBA  = 94,
-    COLOR_YUV420i2BGRA  = 95,
-    COLOR_YUV420sp2RGBA = 96,
-    COLOR_YUV420sp2BGRA = 97,
-
-    COLOR_YUV2RGBA_NV12 = COLOR_YUV420i2RGBA,
-    COLOR_YUV2BGRA_NV12 = COLOR_YUV420i2BGRA,
-    COLOR_YUV2RGBA_NV21 = COLOR_YUV420sp2RGBA,
-    COLOR_YUV2BGRA_NV21 = COLOR_YUV420sp2BGRA,
+    COLOR_YUV2RGB_YV12 = 98,
+    COLOR_YUV2BGR_YV12 = 99,
+    COLOR_YUV2RGB_IYUV = 100,
+    COLOR_YUV2BGR_IYUV = 101,
+    COLOR_YUV2RGB_I420 = COLOR_YUV2RGB_IYUV,
+    COLOR_YUV2BGR_I420 = COLOR_YUV2BGR_IYUV,
+    COLOR_YUV420p2RGB = COLOR_YUV2RGB_YV12,
+    COLOR_YUV420p2BGR = COLOR_YUV2BGR_YV12,
     
-    COLOR_COLORCVT_MAX  =100
+    COLOR_YUV2RGBA_YV12 = 102,
+    COLOR_YUV2BGRA_YV12 = 103,
+    COLOR_YUV2RGBA_IYUV = 104,
+    COLOR_YUV2BGRA_IYUV = 105,
+    COLOR_YUV2RGBA_I420 = COLOR_YUV2RGBA_IYUV,
+    COLOR_YUV2BGRA_I420 = COLOR_YUV2BGRA_IYUV,
+    COLOR_YUV420p2RGBA = COLOR_YUV2RGBA_YV12,
+    COLOR_YUV420p2BGRA = COLOR_YUV2BGRA_YV12,
+    
+    COLOR_YUV2GRAY_420 = 106,
+    COLOR_YUV2GRAY_NV21 = COLOR_YUV2GRAY_420,
+    COLOR_YUV2GRAY_NV12 = COLOR_YUV2GRAY_420,
+    COLOR_YUV2GRAY_YV12 = COLOR_YUV2GRAY_420,
+    COLOR_YUV2GRAY_IYUV = COLOR_YUV2GRAY_420,
+    COLOR_YUV2GRAY_I420 = COLOR_YUV2GRAY_420,
+    COLOR_YUV420sp2GRAY = COLOR_YUV2GRAY_420,
+    COLOR_YUV420p2GRAY = COLOR_YUV2GRAY_420,
+    
+    //YUV 4:2:2 formats family
+    COLOR_YUV2RGB_UYVY = 107,
+    COLOR_YUV2BGR_UYVY = 108,
+    //COLOR_YUV2RGB_VYUY = 109,
+    //COLOR_YUV2BGR_VYUY = 110,
+    COLOR_YUV2RGB_Y422 = COLOR_YUV2RGB_UYVY,
+    COLOR_YUV2BGR_Y422 = COLOR_YUV2BGR_UYVY,
+    COLOR_YUV2RGB_UYNV = COLOR_YUV2RGB_UYVY,
+    COLOR_YUV2BGR_UYNV = COLOR_YUV2BGR_UYVY,
+    
+    COLOR_YUV2RGBA_UYVY = 111,
+    COLOR_YUV2BGRA_UYVY = 112,
+    //COLOR_YUV2RGBA_VYUY = 113,
+    //COLOR_YUV2BGRA_VYUY = 114,
+    COLOR_YUV2RGBA_Y422 = COLOR_YUV2RGBA_UYVY,
+    COLOR_YUV2BGRA_Y422 = COLOR_YUV2BGRA_UYVY,
+    COLOR_YUV2RGBA_UYNV = COLOR_YUV2RGBA_UYVY,
+    COLOR_YUV2BGRA_UYNV = COLOR_YUV2BGRA_UYVY,
+    
+    COLOR_YUV2RGB_YUY2 = 115,
+    COLOR_YUV2BGR_YUY2 = 116,
+    COLOR_YUV2RGB_YVYU = 117,
+    COLOR_YUV2BGR_YVYU = 118,
+    COLOR_YUV2RGB_YUYV = COLOR_YUV2RGB_YUY2,
+    COLOR_YUV2BGR_YUYV = COLOR_YUV2BGR_YUY2,
+    COLOR_YUV2RGB_YUNV = COLOR_YUV2RGB_YUY2,
+    COLOR_YUV2BGR_YUNV = COLOR_YUV2BGR_YUY2,
+    
+    COLOR_YUV2RGBA_YUY2 = 119,
+    COLOR_YUV2BGRA_YUY2 = 120,
+    COLOR_YUV2RGBA_YVYU = 121,
+    COLOR_YUV2BGRA_YVYU = 122,
+    COLOR_YUV2RGBA_YUYV = COLOR_YUV2RGBA_YUY2,
+    COLOR_YUV2BGRA_YUYV = COLOR_YUV2BGRA_YUY2,
+    COLOR_YUV2RGBA_YUNV = COLOR_YUV2RGBA_YUY2,
+    COLOR_YUV2BGRA_YUNV = COLOR_YUV2BGRA_YUY2,
+    
+    COLOR_YUV2GRAY_UYVY = 123,
+    COLOR_YUV2GRAY_YUY2 = 124,
+    //COLOR_YUV2GRAY_VYUY = COLOR_YUV2GRAY_UYVY,
+    COLOR_YUV2GRAY_Y422 = COLOR_YUV2GRAY_UYVY,
+    COLOR_YUV2GRAY_UYNV = COLOR_YUV2GRAY_UYVY,
+    COLOR_YUV2GRAY_YVYU = COLOR_YUV2GRAY_YUY2,
+    COLOR_YUV2GRAY_YUYV = COLOR_YUV2GRAY_YUY2,
+    COLOR_YUV2GRAY_YUNV = COLOR_YUV2GRAY_YUY2,
+    
+    COLOR_COLORCVT_MAX  = 125
 };
     
     
@@ -988,7 +1056,8 @@ enum
     RETR_EXTERNAL=CV_RETR_EXTERNAL, //!< retrieve only the most external (top-level) contours
     RETR_LIST=CV_RETR_LIST, //!< retrieve all the contours without any hierarchical information
     RETR_CCOMP=CV_RETR_CCOMP, //!< retrieve the connected components (that can possibly be nested)
-    RETR_TREE=CV_RETR_TREE //!< retrieve all the contours and the whole hierarchy
+    RETR_TREE=CV_RETR_TREE, //!< retrieve all the contours and the whole hierarchy
+    RETR_FLOODFILL=CV_RETR_FLOODFILL
 };
 
 //! the contour approximation algorithm
@@ -1038,8 +1107,10 @@ CV_EXPORTS_W double matchShapes( InputArray contour1, InputArray contour2,
 //! computes convex hull for a set of 2D points.
 CV_EXPORTS_W void convexHull( InputArray points, OutputArray hull,
                               bool clockwise=false, bool returnPoints=true );
+//! computes the contour convexity defects
+CV_EXPORTS_W void convexityDefects( InputArray contour, InputArray convexhull, OutputArray convexityDefects );
 
-//! returns true iff the contour is convex. Does not support contours with self-intersection
+//! returns true if the contour is convex. Does not support contours with self-intersection
 CV_EXPORTS_W bool isContourConvex( InputArray contour );
 
 //! finds intersection of two convex polygons
@@ -1148,27 +1219,6 @@ protected:
 };
 
 }
-
-// 2009-01-12, Xavier Delacour <xavier.delacour@gmail.com>
-
-struct lsh_hash {
-  int h1, h2;
-};
-
-struct CvLSHOperations
-{
-  virtual ~CvLSHOperations() {}
-
-  virtual int vector_add(const void* data) = 0;
-  virtual void vector_remove(int i) = 0;
-  virtual const void* vector_lookup(int i) = 0;
-  virtual void vector_reserve(int n) = 0;
-  virtual unsigned int vector_count() = 0;
-
-  virtual void hash_insert(lsh_hash h, int l, int i) = 0;
-  virtual void hash_remove(lsh_hash h, int l, int i) = 0;
-  virtual int hash_lookup(lsh_hash h, int l, int* ret_i, int ret_i_max) = 0;
-};
 
 #endif /* __cplusplus */
 

@@ -48,6 +48,7 @@
 #include <OpenCV/opencv2/flann/miniflann.hpp>
 #include <OpenCV/opencv2/imgproc/imgproc_c.h>
 #include <OpenCV/opencv2/imgproc/imgproc.hpp>
+#include <OpenCV/opencv2/photo/photo.hpp>
 #include <OpenCV/opencv2/video/video.hpp>
 #include <OpenCV/opencv2/features2d/features2d.hpp>
 #include <OpenCV/opencv2/objdetect/objdetect.hpp>

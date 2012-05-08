@@ -114,12 +114,12 @@ public:
         int* indices_ptr = NULL;
         DistanceType* dists_ptr = NULL;
         if (indices.cols > 0) {
-            n = indices.cols;
+            n = (int)indices.cols;
             indices_ptr = indices[0];
             dists_ptr = dists[0];
         }
 
-        RadiusUniqueResultSet<DistanceType> resultSet(radius);
+        RadiusUniqueResultSet<DistanceType> resultSet((DistanceType)radius);
         resultSet.clear();
         findNeighbors(resultSet, query[0], params);
         if (n>0) {
@@ -127,7 +127,7 @@ public:
             else resultSet.copy(indices_ptr, dists_ptr, n);
         }
 
-        return resultSet.size();
+        return (int)resultSet.size();
     }
 
     /**

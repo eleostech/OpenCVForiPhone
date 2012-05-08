@@ -7,11 +7,11 @@
 //  copy or use the software.
 //
 //
-//                          License Agreement
+//                           License Agreement
 //                For Open Source Computer Vision Library
 //
 // Copyright (C) 2000-2008, Intel Corporation, all rights reserved.
-// Copyright (C) 2009, Willow Garage Inc., all rights reserved.
+// Copyright (C) 2009-2011, Willow Garage Inc., all rights reserved.
 // Third party copyrights are property of their respective owners.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -40,88 +40,63 @@
 //
 //M*/
 
-#ifndef __OPENCV_STITCHING_UTIL_INL_HPP__
-#define __OPENCV_STITCHING_UTIL_INL_HPP__
+#ifndef __OPENCV_VIDEOSTAB_MOTION_STABILIZING_HPP__
+#define __OPENCV_VIDEOSTAB_MOTION_STABILIZING_HPP__
 
-#include <queue>
+#include <vector>
 #include <OpenCV/opencv2/core/core.hpp>
-#include "util.hpp" // Make your IDE see declarations
 
-namespace cv {
-namespace detail {
-
-template <typename B>
-B Graph::forEach(B body) const
+namespace cv
 {
-    for (int i = 0; i < numVertices(); ++i)
-    {
-        std::list<GraphEdge>::const_iterator edge = edges_[i].begin();
-        for (; edge != edges_[i].end(); ++edge)
-            body(*edge);
-    }
-    return body;
-}
-
-
-template <typename B>
-B Graph::walkBreadthFirst(int from, B body) const
+namespace videostab
 {
-    std::vector<bool> was(numVertices(), false);
-    std::queue<int> vertices;
 
-    was[from] = true;
-    vertices.push(from);
-
-    while (!vertices.empty())
-    {
-        int vertex = vertices.front();
-        vertices.pop();
-
-        std::list<GraphEdge>::const_iterator edge = edges_[vertex].begin();
-        for (; edge != edges_[vertex].end(); ++edge)
-        {
-            if (!was[edge->to])
-            {
-                body(*edge);
-                was[edge->to] = true;
-                vertices.push(edge->to);
-            }
-        }
-    }
-
-    return body;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Some auxiliary math functions
-
-static inline
-float normL2(const Point3f& a)
+class CV_EXPORTS IMotionStabilizer
 {
-    return a.x * a.x + a.y * a.y + a.z * a.z;
-}
+public:
+    virtual void stabilize(const Mat *motions, int size, Mat *stabilizationMotions) const = 0;
+};
 
-
-static inline
-float normL2(const Point3f& a, const Point3f& b)
+class CV_EXPORTS MotionFilterBase : public IMotionStabilizer
 {
-    return normL2(a - b);
-}
+public:
+    MotionFilterBase() : radius_(0) {}
+    virtual ~MotionFilterBase() {}
 
+    virtual void setRadius(int val) { radius_ = val; }
+    virtual int radius() const { return radius_; }
 
-static inline
-double normL2sq(const Mat &r)
+    virtual void update() {}
+
+    virtual Mat stabilize(int index, const Mat *motions, int size) const = 0;
+    virtual void stabilize(const Mat *motions, int size, Mat *stabilizationMotions) const;
+
+protected:
+    int radius_;
+};
+
+class CV_EXPORTS GaussianMotionFilter : public MotionFilterBase
 {
-    return r.dot(r);
-}
+public:
+    GaussianMotionFilter() : stdev_(-1.f) {}
 
+    void setStdev(float val) { stdev_ = val; }
+    float stdev() const { return stdev_; }
 
-static inline int sqr(int x) { return x * x; }
-static inline float sqr(float x) { return x * x; }
-static inline double sqr(double x) { return x * x; }
+    virtual void update();
 
-} // namespace detail
-} // namespace cv
+    virtual Mat stabilize(int index, const Mat *motions, int size) const;
 
-#endif // __OPENCV_STITCHING_UTIL_INL_HPP__
+private:
+    float stdev_;
+    std::vector<float> weight_;
+};
+
+CV_EXPORTS Mat ensureInclusionConstraint(const Mat &M, Size size, float trimRatio);
+
+CV_EXPORTS float estimateOptimalTrimRatio(const Mat &M, Size size);
+
+} // namespace videostab
+} // namespace
+
+#endif

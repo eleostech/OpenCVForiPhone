@@ -7,11 +7,11 @@
 //  copy or use the software.
 //
 //
-//                          License Agreement
+//                           License Agreement
 //                For Open Source Computer Vision Library
 //
 // Copyright (C) 2000-2008, Intel Corporation, all rights reserved.
-// Copyright (C) 2009, Willow Garage Inc., all rights reserved.
+// Copyright (C) 2009-2012, Willow Garage Inc., all rights reserved.
 // Third party copyrights are property of their respective owners.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -40,26 +40,18 @@
 //
 //M*/
 
-#ifndef __OPENCV_STITCHING_AUTOCALIB_HPP__
-#define __OPENCV_STITCHING_AUTOCALIB_HPP__
+#ifndef __OPENCV_NONFREE_HPP__
+#define __OPENCV_NONFREE_HPP__
 
-#include <OpenCV/opencv2/core/core.hpp>
-#include "matchers.hpp"
+#include <OpenCV/opencv2/nonfree/features2d.hpp>
 
-namespace cv {
-namespace detail {
+namespace cv
+{
 
-// See "Construction of Panoramic Image Mosaics with Global and Local Alignment"
-// by Heung-Yeung Shum and Richard Szeliski.
-void CV_EXPORTS focalsFromHomography(const Mat &H, double &f0, double &f1, bool &f0_ok, bool &f1_ok);
+CV_EXPORTS_W bool initModule_nonfree();
+    
+}
 
-void CV_EXPORTS estimateFocal(const std::vector<ImageFeatures> &features, 
-                              const std::vector<MatchesInfo> &pairwise_matches, 
-                              std::vector<double> &focals);
+#endif
 
-bool CV_EXPORTS calibrateRotatingCamera(const std::vector<Mat> &Hs, Mat &K);
-
-} // namespace detail
-} // namespace cv
-
-#endif // __OPENCV_STITCHING_AUTOCALIB_HPP__
+/* End of file. */
