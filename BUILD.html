@@ -1,0 +1,1225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0053)http://aptogo.co.uk/2011/09/opencv-framework-for-ios/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US"><head profile="http://gmpg.org/xfn/11"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Computer vision with iOS Part 1: Building an OpenCV framework — Aptogo</title>
+<meta name="robots" content="noodp, noydir">
+<meta name="description" content="Introduction The example project Using the OpenCV framework in your own projects Rebuilding the OpenCV framework Update: Nov 28 2011 – The OpenCV framework has been rebuilt using opencv svn revision 7017 Update: Check out Part 2 of our series">
+<link rel="stylesheet" href="./BUILD_files/style.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="./BUILD_files/layout.css" type="text/css" media="screen, projection">
+<!--[if lte IE 8]><link rel="stylesheet" href="http://aptogo.co.uk/wp-content/themes/thesis_17/lib/css/ie.css?061810-00116" type="text/css" media="screen, projection" /><![endif]-->
+<link rel="stylesheet" href="./BUILD_files/custom.css" type="text/css" media="screen, projection">
+<link rel="canonical" href="./BUILD_files/BUILD.html">
+<link rel="alternate" type="application/rss+xml" title="Aptogo RSS Feed" href="http://feeds.feedburner.com/Aptogo">
+<link rel="pingback" href="http://aptogo.co.uk/xmlrpc.php">
+<meta name="viewport" content="width=1200, user-scalable=yes">
+<!-- AppStoreHQ:developer_claim_code:1d379e40dc1dc6d6d548640a39dd11bfc6551525 -->  
+<link rel="shortcut icon" type="image/x-icon" href="http://aptogo.co.uk/favicon.ico">
+<meta name="msvalidate.01" content="C033133DE13CEDCD602B74C8510E1C10">
+<meta name="google-site-verification" content="5NVNaf55JCFO-S58YsV6JyQHO2QciDzYbxdg5MP026w">
+<link rel="alternate" type="application/rss+xml" title="Aptogo » Computer vision with iOS Part 1: Building an OpenCV framework Comments Feed" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/feed/">
+<link rel="stylesheet" id="contact-form-7-css" href="./BUILD_files/styles.css" type="text/css" media="all">
+<link rel="stylesheet" id="sociable-front-css-css" href="./BUILD_files/sociable.css" type="text/css" media="all">
+<script src="./BUILD_files/cb=gapi.loaded0" async=""></script><script type="text/javascript" async="" src="./BUILD_files/ga.js"></script><script type="text/javascript" src="./BUILD_files/prototype.js"></script>
+<script type="text/javascript" src="./BUILD_files/wp-scriptaculous.js"></script>
+<script type="text/javascript" src="./BUILD_files/effects.js"></script>
+<script type="text/javascript" src="./BUILD_files/lightbox-resize.js"></script>
+<script type="text/javascript" src="./BUILD_files/comment-reply.js"></script>
+<script type="text/javascript" src="./BUILD_files/jquery.js"></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://aptogo.co.uk/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://aptogo.co.uk/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="No-fuss reflections – generating reflections the easy way in iOS" href="http://aptogo.co.uk/2011/08/no-fuss-reflections/">
+<link rel="next" title="Computer vision with iOS Part 2: Face tracking in live video" href="http://aptogo.co.uk/2011/09/face-tracking/">
+<link rel="shortlink" href="http://aptogo.co.uk/?p=417">
+<script type="text/javascript">
+//<![CDATA[
+var _wpcf7 = { cached: 1 };
+//]]>
+</script>
+
+	<!-- begin lightbox scripts -->
+	<script type="text/javascript">
+    //<![CDATA[
+    document.write('<link rel="stylesheet" href="http://aptogo.co.uk/wp-content/plugins/lightbox-2/Themes/White/lightbox.css" type="text/css" media="screen" />');
+    //]]>
+    </script><link rel="stylesheet" href="./BUILD_files/lightbox.css" type="text/css" media="screen">
+	<!-- end lightbox scripts -->
+
+<link rel="stylesheet" href="./BUILD_files/wp-syntax.css" type="text/css" media="screen">
+
+</head>
+<body class="custom">
+<div id="header_area" class="full_width">
+<div class="page">
+	<div id="header">
+		<p id="logo"><a href="http://aptogo.co.uk/">Aptogo</a></p>
+	</div>
+<div id="main_menu">
+<ul class="mymenu">
+<li class="mytab tab-home"><a href="http://aptogo.co.uk/">Home</a></li>
+<li class="mytab tab-1"><a href="http://aptogo.co.uk/showtime/" title="Showtime">Showtime</a></li>
+<li class="mytab tab-2"><a href="http://aptogo.co.uk/portfolio/" title="Portfolio">Portfolio</a></li>
+<li class="mytab tab-3 current"><a href="http://aptogo.co.uk/articles/" title="Articles">Articles</a></li>
+<li class="mytab tab-4"><a href="http://aptogo.co.uk/about-us/" title="About Us">About Us</a></li>
+</ul>
+</div>
+<ul id="user_panel">
+<li class="rss"><a href="http://feeds.feedburner.com/Aptogo" title="Aptogo RSS Feed">Subscribe</a></li>
+</ul>
+</div>
+</div>
+<div id="content_area" class="full_width">
+<div class="page">
+	<div id="content_box">
+		<div id="content" class="hfeed">
+
+			<div class="post-417 post type-post hentry category-ios post_box top" id="post-417">
+				<div class="headline_area">
+					<h1 class="entry-title">Computer vision with iOS Part 1: Building an OpenCV framework</h1>
+					<p class="headline_meta">by <span class="author vcard fn">Robin Summerhill</span> on <abbr class="published" title="2011-09-07">September 7, 2011</abbr></p>
+				</div>
+				<div class="format_text entry-content">
+<ol class="toc">
+<li><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#intro">Introduction</a></li>
+<li><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#example">The example project</a></li>
+<li><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#using">Using the OpenCV framework in your own projects</a></li>
+<li><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#rebuilding">Rebuilding the OpenCV framework</a></li>
+</ol>
+<p>Update: Nov 28 2011 – The OpenCV framework has been rebuilt using opencv svn revision 7017<br>
+Update: Check out <a href="http://aptogo.co.uk/2011/09/face-tracking/">Part 2</a> of our series on computer vision.</p>
+<h3><a class="tocentry" name="intro">Introduction</a></h3>
+<p>This article is the first in a series looking at computer vision for iOS using the <a href="http://opencv.willowgarage.com/wiki/">OpenCV library</a>. OpenCV is released under the BSD licence and so is free for both academic and commercial use. It includes optimised implementations of all the standard algorithms used today in the field of computer vision and has a huge user base across the Linux, Windows, Mac and Android worlds. In the past, OpenCV has been difficult to build for iOS. However, recent sterling work by the OpenCV team has added iOS build support and video capture.</p>
+<p>In this article we aim to reduce the learning curve even further by providing the OpenCV library as an iOS framework that can be added to your own Xcode projects simply by dragging and dropping. We also provide a build script for re-building the framework should you need to, and an example project that wraps everything up with a neat demo of video capture and image processing using OpenCV on iOS.</p>
+<p>We start by walking you through the example project then describe how to use the OpenCV framework in your own projects. Finally, we describe how to re-build the OpenCV framework and explain how the build script works.</p>
+<p>As ever, we build on the work of others that have gone before us. We would like to acknowledge the OpenCV team, <a href="http://computer-vision-talks.com/">Eugene Khvedchenya</a> for previous work on building OpenCV for iOS and <a href="http://db-in.com/blog/">Diney Bomfim</a> for work on iOS frameworks.</p>
+<h3><a class="tocentry" name="example">The example project</a></h3>
+<p><a href="http://aptogo.co.uk/wp-content/uploads/2011/09/demoapp.png" rel="lightbox[417]"><img src="./BUILD_files/demoapp-300x569.png" alt="The example app" title="demoapp" width="300" height="569" class="alignright size-medium wp-image-460"></a><br>
+The example project is hosted on GitHub. You can visit the GitHub project page at:<br>
+ <a href="https://github.com/aptogo/OpenCVForiPhone">https://github.com/aptogo/OpenCVForiPhone</a><br>
+or download a zip archive of the project directly at:<br>
+ <a href="https://github.com/aptogo/OpenCVForiPhone/zipball/master">https://github.com/aptogo/OpenCVForiPhone/zipball/master</a>.<br>
+The project includes a pre-built OpenCV framework (OpenCV svn revision 7017), a build script to rebuild the framework and an example app that demonstrates video capture and simple image processing using OpenCV.</p>
+<p>To build and run the app, open the OpenCVClient Xcode project and hit ‘Run’. Note that video capture is not supported on the iPhone Simulator. Run the example app on an iOS device to see video capture in action.</p>
+<p>The app starts by running some simple performance tests converting between UIImages and cv::Mat objects. Timing results are output to the console. After the performance tests have completed the main interface is shown. Tap the ‘Capture’ button to capture a video frame. The frame is processed using the Canny edge detection algorithm to exercise some of OpenCV’s image processing functions and the results are displayed on screen. Use the sliders to adjust the low and high algorithm threshold values. The time taken to process the frame is also displayed. Typical values are around 90ms on the iPhone 4 and around 200ms on the iPhone 3.</p>
+<h3><a class="tocentry" name="using">Using the OpenCV framework in your own projects</a></h3>
+<h4>Adding the OpenCV Framework</h4>
+<p>The easiest way to add the OpenCV framework to your own project is to drag the <code>OpenCV.framework</code> folder from the example project folder in Finder and drop it onto the ‘Frameworks’ group of your target project in the Xcode Project navigator. Check the option ‘Copy items into destination group’s folder’ in the dialog that appears if you want to copy the OpenCV framework into your target project. If you are sharing a copy of the framework between multiple projects or have a common build location for the framework then you will want to leave the option unchecked.</p>
+<p>Alternatively, you can navigate to the ‘Build Phases’ tab of the Project properties pane in Xcode. Drop down the ‘Link Binary With Libraries’ build phase item and click the ‘+’ button. Select “Add Other…’ from the dialog that appears and navigate to the OpenCV.framework folder.</p>
+<p>Once you have added the OpenCV framework, your project is set up to link against the OpenCV libraries automatically and the OpenCV header files are also made available. Refer to OpenCV header files in your project <code>#include</code> statements using the framework-relative notation (i.e <code>#include &lt;OpenCV/opencv/.../...&gt;</code>).</p>
+<h4>Add additional required frameworks</h4>
+<p>To use the OpenCV framework you must add a few extra Apple-supplied frameworks to your project. To do this, navigate to the ‘Build Phases’ tab of the Project properties pane in xCode. Drop down the ‘Link Binary With Libraries’ build phase item and click the ‘+’ button. Add the frameworks and libraries shown below. The frameworks in the first column of the table are required. The frameworks in the second column are optional and are only needed if you are using the video capture support included in OpenCV’s <code>highgui</code> module.</p>
+<table>
+<thead>
+<tr>
+<td>Framework</td>
+<td>Required</td>
+<td>Optional (required for video capture)</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AVFoundation.framework</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>ImageIO.framework</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>libz.dylib</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>CoreVideo.framework</td>
+<td></td>
+<td>✓</td>
+</tr>
+<tr>
+<td>CoreMedia.framework</td>
+<td></td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<p>When you have added all the required frameworks, your project’s Build Phases tab in the Project Properties pane should look like this:</p>
+<div id="attachment_439" class="wp-caption aligncenter" style="width: 640px">
+	<a href="http://aptogo.co.uk/wp-content/uploads/2011/09/Screen-Shot-2011-09-07-at-14.53.12.png" rel="lightbox[417]"><img class="size-large wp-image-439" title="Screen Shot 2011-09-07 at 14.53.12" src="./BUILD_files/Screen-Shot-2011-09-07-at-14.53.12-640x349.png" alt="" width="640" height="349"></a>
+	<p class="wp-caption-text">The Build Phases tab in the XCode Project Properties pane</p>
+</div>
+<h4>Include the OpenCV headers</h4>
+<p>The headers that declare the OpenCV and OpenCV2 APIs are provided as part of the OpenCV framework. The headers can be browsed by dropping down the OpenCV.framework item in the ‘Frameoworks’ group of the Project navigator in XCode. To write OpenCV client code you need to include these headers in your project. The easiest way to do this is to modify your pre-complied header file (<code>&lt;project name&gt;-Prefix.pch</code>) to add the three new lines shown below:</p>
+
+<div class="wp_syntax"><div class="code"><pre class="objc" style="font-family:monospace;"><span style="color: #11740a; font-style: italic;">///////////////////////////////////////////////////////////////////////////</span>
+<span style="color: #11740a; font-style: italic;">// Add this new section BEFORE the #import statements for UIKit and Foundation</span>
+<span style="color: #6e371a;">#ifdef __cplusplus</span>
+    <span style="color: #6e371a;">#import &lt;OpenCV/opencv2/opencv.hpp&gt;</span>
+<span style="color: #6e371a;">#endif</span>
+&nbsp;
+<span style="color: #11740a; font-style: italic;">// Existing #import statements</span>
+<span style="color: #6e371a;">#ifdef __OBJC__</span>
+    <span style="color: #6e371a;">#import &lt;UIKit/UIKit.h&gt;</span>
+    <span style="color: #6e371a;">#import &lt;Foundation/Foundation.h&gt;</span>
+<span style="color: #6e371a;">#endif</span></pre></div></div>
+
+<p>You must also change the extension of any source file in your project in which you wish to use OpenCV from ‘<code>.m</code>‘ to ‘<code>.mm</code>‘. This indicates to the compiler that the source file includes mixed Objective-C and C++ code. Note that individual source files that don’t use OpenCV can remain as ‘<code>.m</code>‘ files.</p>
+<p>For the curious, the OpenCV headers must be included before <code>UIKit.h</code> and <code>Foundation.h</code> because OpenCV defines a <code>MIN</code> macro that conflicts with the <code>MIN</code> function defined by the Apple frameworks. If you include the OpenCV headers after <code>UIKit.h</code> and <code>Foundation.h</code> you will receive compilation errors such as ‘LLVM GCC 4.2 Error: Statement-expressions are allowed only inside functions’. Including the OpenCV headers first and surrounding the <code>#import</code> with the <code>__cplusplus</code> conditional test avoids this problem and means that you can still use plain Objective-C for  ‘<code>.m</code>‘ files in your project that don’t call the OpenCV APIs.</p>
+<h4>Using the UIImage extensions</h4>
+<p>The example project includes extensions to UIImage for converting to and from cv:Mat objects. These are provided as a UIImage category in two source files (UIImage+OpenCV.h and .mm). To use the extensions simply add the two source files to your project and make use of the following new UIImage methods and properties:</p>
+
+<div class="wp_syntax"><div class="code"><pre class="objc" style="font-family:monospace;"><span style="color: #a61390;">@interface</span> UIImage <span style="color: #002200;">(</span>UIImage_OpenCV<span style="color: #002200;">)</span>
+&nbsp;
+<span style="color: #11740a; font-style: italic;">// Returns an autoreleased UIImage from cv::Mat</span>
+<span style="color: #002200;">+</span><span style="color: #002200;">(</span>UIImage <span style="color: #002200;">*</span><span style="color: #002200;">)</span>imageWithCVMat<span style="color: #002200;">:</span><span style="color: #002200;">(</span><span style="color: #a61390;">const</span> cv<span style="color: #002200;">::</span>Mat<span style="color: #002200;">&amp;</span>amp;<span style="color: #002200;">)</span>cvMat;
+&nbsp;
+<span style="color: #11740a; font-style: italic;">// Initialises a UIImage from cv::Mat</span>
+<span style="color: #002200;">-</span><span style="color: #002200;">(</span><span style="color: #a61390;">id</span><span style="color: #002200;">)</span>initWithCVMat<span style="color: #002200;">:</span><span style="color: #002200;">(</span><span style="color: #a61390;">const</span> cv<span style="color: #002200;">::</span>Mat<span style="color: #002200;">&amp;</span>amp;<span style="color: #002200;">)</span>cvMat;
+&nbsp;
+<span style="color: #11740a; font-style: italic;">// Returns cv::Mat object from UIImage</span>
+<span style="color: #a61390;">@property</span><span style="color: #002200;">(</span>nonatomic, readonly<span style="color: #002200;">)</span> cv<span style="color: #002200;">::</span>Mat CVMat;
+&nbsp;
+<span style="color: #11740a; font-style: italic;">// Returns grayscale cv::Mat object from UIImage</span>
+<span style="color: #a61390;">@property</span><span style="color: #002200;">(</span>nonatomic, readonly<span style="color: #002200;">)</span> cv<span style="color: #002200;">::</span>Mat CVGrayscaleMat;
+&nbsp;
+<span style="color: #a61390;">@end</span></pre></div></div>
+
+<h3><a class="tocentry" name="rebuilding">Rebuilding the OpenCV framework</a></h3>
+<p>Included with the example project is a shell script (<code>opencvbuild.sh</code>) that automates building and packaging of the OpenCV libraries. Before starting you will need to make sure that you have Subversion and CMake on your build system. Subversion is required to download the latest OpenCV sources and CMake is the build system used by the OpenCV team. Binary installers for both are provided at the locations listed below:</p>
+<table>
+<tbody>
+<tr>
+<td>Subversion for Mac</td>
+<td><a href="http://www.open.collab.net/downloads/community/">http://www.open.collab.net/downloads/community/</a></td>
+</tr>
+<tr>
+<td>CMake for Mac</td>
+<td><a href="http://www.cmake.org/cmake/resources/software.html">http://www.cmake.org/cmake/resources/software.html</a></td>
+</tr>
+</tbody>
+</table>
+<h4>Obtaining the OpenCV source</h4>
+<p>First change to the directory where you want the source files to be extracted. If you are following the layout of the example project, this is the <code>opencv</code> subdirectory of the project root directory:</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"><span style="color: #7a0874; font-weight: bold;">cd</span> <span style="color: #000000; font-weight: bold;">&lt;</span>project root<span style="color: #000000; font-weight: bold;">&gt;/</span>opencv</pre></div></div>
+
+<p>Next, checkout the latest sources from the offical repository. At the time of writing, support for iOS builds and video capture have not made it into the stable OpenCV release so we are using the latest sources in ‘trunk’. (Note the final period at the end of the command):</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"><span style="color: #c20cb9; font-weight: bold;">svn</span> <span style="color: #c20cb9; font-weight: bold;">co</span> https:<span style="color: #000000; font-weight: bold;">//</span>code.ros.org<span style="color: #000000; font-weight: bold;">/</span>svn<span style="color: #000000; font-weight: bold;">/</span>opencv<span style="color: #000000; font-weight: bold;">/</span>trunk .</pre></div></div>
+
+<p>You should now have the OpenCV source tree under your chosen location:</p>
+<div id="attachment_431" class="wp-caption aligncenter" style="width: 615px">
+	<a href="./BUILD_files/Screen-Shot-2011-09-07-at-14.26.06.png" rel="lightbox[417]"><img class="size-full wp-image-431" title="Screen Shot 2011-09-07 at 14.26.06" src="./BUILD_files/Screen-Shot-2011-09-07-at-14.26.06.png" alt="Directory listing of OpenCVForiOS" width="615" height="493"></a>
+	<p class="wp-caption-text">Directory listing of OpenCVForiOS project folder</p>
+</div>
+<h4>Building OpenCV</h4>
+<p>The <code>opencvbuild</code> shell script takes two command-line arguments: the head of the OpenCV source tree and the location where you want the build to be performed. For the example project we built the framework in the project root directory (again, note the final period as the second argument to opencvbuild):</p>
+
+<div class="wp_syntax"><div class="code"><pre class="bash" style="font-family:monospace;"><span style="color: #7a0874; font-weight: bold;">cd</span> <span style="color: #000000; font-weight: bold;">&lt;</span>project root<span style="color: #000000; font-weight: bold;">&gt;</span>
+.<span style="color: #000000; font-weight: bold;">/</span>opencvbuild opencv<span style="color: #000000; font-weight: bold;">/</span>opencv .</pre></div></div>
+
+<p>If the build completed successfully you should now have the OpenCV framework along with three library packages in your chosen build location:</p>
+<table>
+<tbody>
+<tr>
+<td>OpenCV.framework</td>
+<td>framework for use with iOS device or Simulator</td>
+</tr>
+<tr>
+<td>OpenCV_iPhoneOS</td>
+<td>libraries and headers for use with iOS device</td>
+</tr>
+<tr>
+<td>OpenCV_iPhoneSimulator</td>
+<td>libraries and headers for use with iPhone Simulator</td>
+</tr>
+<tr>
+<td>OpenCV_Universal</td>
+<td>fat libraries and headers for use with iOS device or Simulator</td>
+</tr>
+</tbody>
+</table>
+<p>The library packages are built as an intermediate step before the framework is assembled. You can choose to remove them or you may prefer to link against the individual libraries instead of using the OpenCV framework.</p>
+<h4>How it works</h4>
+<p>Most of the heavy lifting in <code>opencvbuild</code> is delegated to <code>cmake</code> and <code>xcodebuild</code>. First, an Xcode project file is created using <code>cmake</code> and the CMake configuration files provided by the OpenCV team. From revision 6675, support for iOS builds was introduced, which makes our life much easier. A command-line build is then initiated using <code>xcodebuild</code> driven by the Xcode project file created in the first step.</p>
+<p>The build script actually performs the build twice, once targeting iOS devices (armv6 and armv7) and once targeting the Simulator (i386). The resulting binaries are then combined with the <code>lipo</code> tool to produce fat binaries that support operation on both device and simulator. These fat binaries can be found in the <code>OpenCV_Universal</code> intermediate build directory.</p>
+<p>Finally, the libraries and OpenCV header files are assembled into the OpenCV framework. Two problems arise here, which the script overcomes with a couple of sneaky tricks. First, a framework for iOS can only include a single static library but the OpenCV build has produced 11 that we need to include. To get around this restriction the script simply combines the 11 libraries into one using <code>libtool</code> and then moves the resulting super-library into place within the framework. Secondly, the OpenCV headers use relative paths in <code>#include</code> statements, which makes them difficult to use without configuring header search paths within your project settings. To solve this, the script replaces any occurrence of a relative include path (i.e. <code>"opencv/.../..."</code>) with a framework-based include path (i.e. <code>&lt;OpenCV/opencv/.../...&gt;</code>). The headers are added to the framework so that the whole package, library and headers, can be added to your project in a single step.</p>
+<h3>Links to example project source code</h3>
+<p>Git – <a href="https://github.com/aptogo/OpenCVForiPhone">https://github.com/aptogo/OpenCVForiPhone</a><br>
+Download zip – <a href="https://github.com/aptogo/OpenCVForiPhone/zipball/master">https://github.com/aptogo/OpenCVForiPhone/zipball/master</a></p>
+<p><div id="___plusone_0" style="height: 24px; width: 106px; display: inline-block; text-indent: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; background-image: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: transparent; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; background-position: initial initial; background-repeat: initial initial; "><iframe allowtransparency="true" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="width: 106px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; height: 24px; position: static; left: 0px; top: 0px; visibility: visible; " tabindex="0" vspace="0" width="100%" id="I1_1336158760210" name="I1_1336158760210" src="./BUILD_files/fastbutton.html" title="+1"></iframe></div></p>
+
+<div class="sociable">
+<div class="sociable_tagline">
+<strong>Share and Enjoy:</strong>
+</div>
+<ul>
+	<li class="sociablefirst"><a rel="nofollow" href="http://www.printfriendly.com/print?url=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&partner=sociable" title="Print"><img src="./BUILD_files/services-sprite.gif" title="Print" alt="Print" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-343px -37px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="mailto:?subject=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework&body=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F" title="email"><img src="./BUILD_files/services-sprite.gif" title="email" alt="email" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-325px -1px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="http://digg.com/submit?phase=2&url=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&title=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework&bodytext=%0D%0AIntroduction%0D%0AThe%20example%20project%0D%0AUsing%20the%20OpenCV%20framework%20in%20your%20own%20projects%0D%0ARebuilding%20the%20OpenCV%20framework%0D%0A%0D%0A%0D%0AUpdate%3A%20Nov%2028%202011%20-%20The%20OpenCV%20framework%20has%20been%20rebuilt%20using%20opencv%20svn%20revision%207017%0D%0AUpdate%3A%20Check%20out%20Part%202%20of%20our%20ser" title="Digg"><img src="./BUILD_files/services-sprite.gif" title="Digg" alt="Digg" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-235px -1px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="http://delicious.com/post?url=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&title=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework&notes=%0D%0AIntroduction%0D%0AThe%20example%20project%0D%0AUsing%20the%20OpenCV%20framework%20in%20your%20own%20projects%0D%0ARebuilding%20the%20OpenCV%20framework%0D%0A%0D%0A%0D%0AUpdate%3A%20Nov%2028%202011%20-%20The%20OpenCV%20framework%20has%20been%20rebuilt%20using%20opencv%20svn%20revision%207017%0D%0AUpdate%3A%20Check%20out%20Part%202%20of%20our%20ser" title="del.icio.us"><img src="./BUILD_files/services-sprite.gif" title="del.icio.us" alt="del.icio.us" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-199px -1px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="http://www.facebook.com/share.php?u=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&t=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework" title="Facebook"><img src="./BUILD_files/services-sprite.gif" title="Facebook" alt="Facebook" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-343px -1px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&title=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework&annotation=%0D%0AIntroduction%0D%0AThe%20example%20project%0D%0AUsing%20the%20OpenCV%20framework%20in%20your%20own%20projects%0D%0ARebuilding%20the%20OpenCV%20framework%0D%0A%0D%0A%0D%0AUpdate%3A%20Nov%2028%202011%20-%20The%20OpenCV%20framework%20has%20been%20rebuilt%20using%20opencv%20svn%20revision%207017%0D%0AUpdate%3A%20Check%20out%20Part%202%20of%20our%20ser" title="Google Bookmarks"><img src="./BUILD_files/services-sprite.gif" title="Google Bookmarks" alt="Google Bookmarks" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-91px -19px" class="sociable-hovers"></a></li>
+	<li><a rel="nofollow" href="http://reddit.com/submit?url=http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F&title=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework" title="Reddit"><img src="./BUILD_files/services-sprite.gif" title="Reddit" alt="Reddit" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-55px -55px" class="sociable-hovers"></a></li>
+	<li class="sociablelast"><a rel="nofollow" href="http://twitter.com/home?status=Computer%20vision%20with%20iOS%20Part%201%3A%20Building%20an%20OpenCV%20framework%20-%20http%3A%2F%2Faptogo.co.uk%2F2011%2F09%2Fopencv-framework-for-ios%2F" title="Twitter"><img src="./BUILD_files/services-sprite.gif" title="Twitter" alt="Twitter" style="width: 16px; height: 16px; background: transparent url(http://aptogo.co.uk/wp-content/plugins/sociable/images/services-sprite.png) no-repeat; background-position:-343px -55px" class="sociable-hovers"></a></li>
+</ul>
+</div>
+				</div>
+			</div>
+
+			<div id="comments">
+				<div id="comments_intro" class="comments_intro">
+					<p><span class="bracket">{</span> <span>54</span> comments… read them below or <a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#respond" rel="nofollow">add one</a> <span class="bracket">}</span></p>
+				</div>
+
+				<dl id="comment_list">
+					<dt class="comment even thread-even depth-1 parent" id="comment-1161">
+<span class="avatar"><a href="http://www.limit-point.com/" rel="nofollow"><img alt="" src="./BUILD_files/7a18c44a5c532448dbaa08e48f0078c4" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.limit-point.com/" rel="external nofollow" class="url">Joe Pagliaro</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1161" title="Permalink to this comment" rel="nofollow">September 14, 2011 at 3:22 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1 parent">
+<div class="format_text" id="comment-body-1161">
+<p>Thank you! </p>
+<p>This article made it a breeze to get up and running with OpenCV on iOS. It is very well written. I am new to OpenCV, and the sample project you provide, OpenCVForiPhone, provided a great start. I anticipate future articles in this series.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1161#respond" onclick="return addComment.moveForm(&quot;comment-body-1161&quot;, &quot;1161&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-1162">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1162" title="Permalink to this comment" rel="nofollow">September 14, 2011 at 3:30 pm</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-1162">
+<p>Glad you liked it! We always appreciate hearing from our readers – the next installment is in the works…</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1162#respond" onclick="return addComment.moveForm(&quot;comment-body-1162&quot;, &quot;1162&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-1205">
+<span class="avatar"><a href="http://www.mattmontag.com/" rel="nofollow"><img alt="" src="./BUILD_files/cc22e760170e318c8339d3c3694882dc" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.mattmontag.com/" rel="external nofollow" class="url">Matt Montag</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1205" title="Permalink to this comment" rel="nofollow">September 25, 2011 at 8:01 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1205">
+<p>I am having trouble building the latest OpenCV source with this script.  See my stackoverflow question here: <a href="http://stackoverflow.com/questions/7544219/compiling-latest-opencv-from-source-on-os-x-with-cmake" rel="nofollow">http://stackoverflow.com/questions/7544219/compiling-latest-opencv-from-source-on-os-x-with-cmake</a></p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1205#respond" onclick="return addComment.moveForm(&quot;comment-body-1205&quot;, &quot;1205&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1 parent" id="comment-1221">
+<span class="avatar"><a href="http://www.dev2rights.co.uk/" rel="nofollow"><img alt="" src="./BUILD_files/fdea73dc97e4ae605faeb8a42f5b7667" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.dev2rights.co.uk/" rel="external nofollow" class="url">Dev2rights</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1221" title="Permalink to this comment" rel="nofollow">September 30, 2011 at 6:03 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1 parent">
+<div class="format_text" id="comment-body-1221">
+<p>Hi Robin,</p>
+<p>I have used this tutorial and modified it for a open source tutorial app we are working on. The tutorial is there to benchmark various combinations of feature trackers (MSER, FAST, SURF , STAR) and various feature detector and comparison algorithms. We will be releasing this as a tutorial with source code when completed, do you mind ? </p>
+<p>Jim @ Dev2rights</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1221#respond" onclick="return addComment.moveForm(&quot;comment-body-1221&quot;, &quot;1221&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment even depth-2" id="comment-2535">
+<span class="avatar"><a href="http://fraserhardy.co.uk/" rel="nofollow"><img alt="" src="./BUILD_files/3916f4ede7db86fbfd5ffef8fc473fc2" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://fraserhardy.co.uk/" rel="external nofollow" class="url">Fraser Hardy</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2535" title="Permalink to this comment" rel="nofollow">March 6, 2012 at 2:01 pm</a></span>
+
+					</dt>
+					<dd class="comment even depth-2">
+<div class="format_text" id="comment-body-2535">
+<p>Hi Jim, </p>
+<p>I would be interested to see this tutorial. Is it available online yet? </p>
+<p>Cheers,<br>
+Fraser</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2535#respond" onclick="return addComment.moveForm(&quot;comment-body-2535&quot;, &quot;2535&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-1266">
+<span class="avatar"><img alt="" src="./BUILD_files/2435b435c51081f3816bf6ac3123b2cc" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Irad Gilboa</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1266" title="Permalink to this comment" rel="nofollow">October 9, 2011 at 5:19 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1266">
+<p>Hi Robin,<br>
+Thank you for this great tutorial and the excellent sample code (the pre-built OpenCV framework is just what I was looking for).<br>
+Using your tutorial I was able to include openCV in my own project in no time – you just made my day!</p>
+<p>Keep up the good work,<br>
+Irad</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1266#respond" onclick="return addComment.moveForm(&quot;comment-body-1266&quot;, &quot;1266&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-even depth-1" id="comment-1306">
+<span class="avatar"><img alt="" src="./BUILD_files/d70ce51b17b0fb0840f6ff31f6bb42ee" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Phy</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1306" title="Permalink to this comment" rel="nofollow">October 18, 2011 at 6:02 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1">
+<div class="format_text" id="comment-body-1306">
+<p>Hi Robin,<br>
+ and thank you for sharing your script! I’ve added a comment here: <a href="http://stackoverflow.com/questions/7544219/compiling-latest-opencv-from-source-on-os-x-with-cmake" rel="nofollow">http://stackoverflow.com/questions/7544219/compiling-latest-opencv-from-source-on-os-x-with-cmake</a></p>
+<p>Can you give me few hints of what can be wrong?<br>
+XCode 4.2<br>
+CMake 2.6-4<br>
+opencv rev 6769</p>
+<p>thank you in advance!!!<br>
+phy</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1306#respond" onclick="return addComment.moveForm(&quot;comment-body-1306&quot;, &quot;1306&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1 parent" id="comment-1350">
+<span class="avatar"><a href="http://www.danielkiedrowski.com/" rel="nofollow"><img alt="" src="./BUILD_files/49d0650c4ab72f3ba5c16f08f3083e56" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.danielkiedrowski.com/" rel="external nofollow" class="url">Daniel Kiedrowski</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1350" title="Permalink to this comment" rel="nofollow">October 25, 2011 at 5:28 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-1350">
+<p>Hello,<br>
+thanks for your work.<br>
+Two Questions:<br>
+1. What Version of OpenCV is in the framework?<br>
+2. How can I use cv::findContours. Everytime I use it with your framework I get assertions.</p>
+<p>Thx.<br>
+Daniel</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1350#respond" onclick="return addComment.moveForm(&quot;comment-body-1350&quot;, &quot;1350&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment even depth-2" id="comment-1352">
+<span class="avatar"><a href="http://www.danielkiedrowski.com/" rel="nofollow"><img alt="" src="./BUILD_files/c2805d5c06cee6a6a4931f6f70ad067b" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.danielkiedrowski.com/" rel="external nofollow" class="url">Daniel Kiedrowski</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1352" title="Permalink to this comment" rel="nofollow">October 26, 2011 at 1:54 am</a></span>
+
+					</dt>
+					<dd class="comment even depth-2">
+<div class="format_text" id="comment-body-1352">
+<p>Hello again.<br>
+Never mind question 2. After some hours of recompiling OpenCV and looking at my code, I finally found my stupid mistake. I think I share it here, in case someone else is doing it.</p>
+<p>Instead of writing std::vector&lt;std::vector &gt; to define a container for the resulting contour, I wrote std::vector&lt;std::vector &gt; what leads to my compiler mixing up cv::Point with Point (which actually exist, perhaps in the iOS SDK) and giving me this annoying assertions.</p>
+<p>Thx.<br>
+Daniel</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1352#respond" onclick="return addComment.moveForm(&quot;comment-body-1352&quot;, &quot;1352&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-1396">
+<span class="avatar"><a href="http://www.sarpdoruktahmaz.com/" rel="nofollow"><img alt="" src="./BUILD_files/3cc6cf0ad97558c7f1081b1fa0f9d92e" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.sarpdoruktahmaz.com/" rel="external nofollow" class="url">Sarpdoruk TAHMAZ</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1396" title="Permalink to this comment" rel="nofollow">November 6, 2011 at 8:14 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-1396">
+<p>Thanks for the great and well written article.  Thanks to you I was able to include OpenCV to my iOS project.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1396#respond" onclick="return addComment.moveForm(&quot;comment-body-1396&quot;, &quot;1396&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-1405">
+<span class="avatar"><img alt="" src="./BUILD_files/1199adfcd4dd666a006dfedffbaf24a8" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">w00</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1405" title="Permalink to this comment" rel="nofollow">November 8, 2011 at 5:53 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1405">
+<p>Hi, i’m trying to do templateMatching, but i think i’m doing it wrong because the ouput that i get doesn’t include any data if the object is found where. Atleast, i don’t see it…</p>
+<p>If you have the time could you please take a look at:<br>
+<a href="http://stackoverflow.com/questions/8049066/iphone-opencv-template-matching" rel="nofollow">http://stackoverflow.com/questions/8049066/iphone-opencv-template-matching</a></p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1405#respond" onclick="return addComment.moveForm(&quot;comment-body-1405&quot;, &quot;1405&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-1409">
+<span class="avatar"><img alt="" src="./BUILD_files/c2317dbfc451780aeff6a30341256ad3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">WANG Chi</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1409" title="Permalink to this comment" rel="nofollow">November 8, 2011 at 8:48 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-1409">
+<p>Great, will try out this tonight <img src="./BUILD_files/icon_smile.gif" alt=":)" class="wp-smiley"> </p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1409#respond" onclick="return addComment.moveForm(&quot;comment-body-1409&quot;, &quot;1409&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1 parent" id="comment-1473">
+<span class="avatar"><img alt="" src="./BUILD_files/05a9a54bb415d8b3db769259d8a33138" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">yiqunc</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1473" title="Permalink to this comment" rel="nofollow">November 21, 2011 at 9:31 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-1473">
+<p>hi ROBIN, your tutorial is so helpful! big thanks!<br>
+I have some problem when trying to rebuild the opencv source with your “opencvbuild.sh” script.<br>
+I noticed that build for the Simulator was successful but failed for the Device build, I am using:<br>
+Xcode4.2,<br>
+CMake 2.8.6<br>
+opencv Rev: 6988</p>
+<p>The error info is like this:<br>
+============================================================<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/task.h:37:<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/mach_interface.h:50:<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/mach.h:67:<br>
+In file included from /Users/yiqunc/opencv/opencv/modules/core/src/system.cpp:76:<br>
+/Applications/xcode4.2.0/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/include/mach/arm/task.h:438:2: error: unknown type name ‘mach_zone_name_array_t’; did you mean ‘mach_port_name_array_t’? [3]<br>
+         mach_zone_name_array_t *names,<br>
+         ^~~~~~~~~~~~~~~~~~~~~~<br>
+         mach_port_name_array_t<br>
+fix-it:”/Applications/xcode4.2.0/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/include/mach/arm/task.h”:{438:2-438:24}:”mach_port_name_array_t”<br>
+/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/port.h:107:27: note: ‘mach_port_name_array_t’ declared here [3]<br>
+ typedef mach_port_name_t *mach_port_name_array_t;<br>
+                           ^<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/task.h:37:<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/mach_interface.h:50:<br>
+In file included from /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach/mach.h:67:<br>
+In file included from /Users/yiqunc/opencv/opencv/modules/core/src/system.cpp:76:<br>
+/Applications/xcode4.2.0/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/include/mach/arm/task.h:440:2: error: unknown type name ‘task_zone_info_array_t’; did you mean ‘zone_info_array_t’? [3]<br>
+         task_zone_info_array_t *info,<br>
+         ^~~~~~~~~~~~~~~~~~~~~~<br>
+         zone_info_array_t<br>
+fix-it:”/Applications/xcode4.2.0/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/include/mach/arm/task.h”:{440:2-440:24}:”zone_info_array_t”<br>
+/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.0.sdk/usr/include/mach_debug/zone_info.h:91:22: note: ‘zone_info_array_t’ declared here [3]<br>
+ typedef zone_info_t *zone_info_array_t;<br>
+                      ^<br>
+2 warnings and 2 errors generated.</p>
+<p>** BUILD FAILED **</p>
+<p>The following build commands failed:<br>
+	CompileC /Users/yiqunc/opencv/tmp/modules/core/OpenCV.build/Release-iphoneos/opencv_core.build/Objects-normal/armv7/system.o modules/core/src/system.cpp normal armv7 c++ com.apple.compilers.llvm.clang.1_0.compiler<br>
+(1 failure)<br>
+============================================================</p>
+<p>I also have checked this file “/Applications/xcode4.2.0/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/usr/include/mach/arm/task.h” and it does inculde another header file “” which includes  which contains the declaration of “mach_zone_name_array_t”. </p>
+<p>could you please give me some hints?</p>
+<p>Thank you very much!</p>
+<p>Yiqunc</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1473#respond" onclick="return addComment.moveForm(&quot;comment-body-1473&quot;, &quot;1473&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2 parent" id="comment-1476">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1476" title="Permalink to this comment" rel="nofollow">November 22, 2011 at 8:26 am</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2 parent">
+<div class="format_text" id="comment-body-1476">
+<p>It sounds like there have been some changes since 6675. I will take a look and make any fixes needed. Thanks for pointing this out.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1476#respond" onclick="return addComment.moveForm(&quot;comment-body-1476&quot;, &quot;1476&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment even depth-3 parent" id="comment-1478">
+<span class="avatar"><img alt="" src="./BUILD_files/05a9a54bb415d8b3db769259d8a33138" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">yiqunc</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1478" title="Permalink to this comment" rel="nofollow">November 22, 2011 at 7:14 pm</a></span>
+
+					</dt>
+					<dd class="comment even depth-3 parent">
+<div class="format_text" id="comment-body-1478">
+<p>Thanks Robin, you have done an awesome job!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1478#respond" onclick="return addComment.moveForm(&quot;comment-body-1478&quot;, &quot;1478&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-4" id="comment-1499">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1499" title="Permalink to this comment" rel="nofollow">November 28, 2011 at 10:37 am</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-4">
+<div class="format_text" id="comment-body-1499">
+<p>I’ve rebuilt the framework using the latest revision from the OpenCV repository (7017) and updated the project repository on GitHub. I didn’t see any build problems. Let me know if you are still having issues rebuilding.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1499#respond" onclick="return addComment.moveForm(&quot;comment-body-1499&quot;, &quot;1499&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					</dl>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-even depth-1 parent" id="comment-1590">
+<span class="avatar"><img alt="" src="./BUILD_files/35079c36907b5914cd9f0d732b5ec921" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">sarah</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1590" title="Permalink to this comment" rel="nofollow">December 9, 2011 at 2:25 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1 parent">
+<div class="format_text" id="comment-body-1590">
+<p>Hi thanks for your written<br>
+I have problem with running the script in command line. because it says that the line 80 (cmake -GXcode) in not found. could you please help me what i can do to make framework now?</p>
+<p>thanks a lot</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1590#respond" onclick="return addComment.moveForm(&quot;comment-body-1590&quot;, &quot;1590&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-1652">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1652" title="Permalink to this comment" rel="nofollow">December 15, 2011 at 1:21 pm</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-1652">
+<p>It sounds like a problem with you CMake installation. The cmake executable must be on your path for the script to work. Type ‘which cmake’ in Terminal to find where cmake has been installed and then type ‘cmake –version’ to see if it is on your path and to see which version is installed.</p>
+<p>Don’t forget that you can always use the pre-built OpenCV framework provided with the example. You only need to rebuild using the script if you have a specific need to.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1652#respond" onclick="return addComment.moveForm(&quot;comment-body-1652&quot;, &quot;1652&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1 parent" id="comment-1649">
+<span class="avatar"><img alt="" src="./BUILD_files/3692dd7b92873bc7b5f35b395760007c" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Gustavo</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1649" title="Permalink to this comment" rel="nofollow">December 15, 2011 at 9:38 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-1649">
+<p>It is giving me problems with the library highgui  on the revision 7054.</p>
+<p>** BUILD FAILED **</p>
+<p>The following build commands failed:<br>
+opencv_highgui:<br>
+	CompileC /Users/opencv/trunk/tmp/modules/highgui/OpenCV.build/Release-iphonesimulator/opencv_highgui.build/Objects-normal/i386/cap_avfoundation.o /Users/opencv/trunk/opencv/modules/highgui/src/cap_avfoundation.mm normal i386 objective-c++ com.apple.compilers.gcc.4_2<br>
+(1 failure)</p>
+<p>thanks</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1649#respond" onclick="return addComment.moveForm(&quot;comment-body-1649&quot;, &quot;1649&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-1654">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1654" title="Permalink to this comment" rel="nofollow">December 15, 2011 at 1:51 pm</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-1654">
+<p>Hi Gustavo,</p>
+<p>I’ve just tried building 7054 and am getting a different set of errors to you. The bleeding-edge trunk is not always stable and some check-ins may break the build on certain platforms. Unless you have  a specific need to use the very latest OpenCV source from trunk it is best to use the pre-built framework included with the example project for this article. I periodically rebuild the framework and test it on a range of iOS devices so you can be sure that the pre-built framework will work and is fairly up-to-date.</p>
+<p>Robin</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1654#respond" onclick="return addComment.moveForm(&quot;comment-body-1654&quot;, &quot;1654&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-even depth-1" id="comment-1661">
+<span class="avatar"><img alt="" src="./BUILD_files/3692dd7b92873bc7b5f35b395760007c" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Gustavo</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1661" title="Permalink to this comment" rel="nofollow">December 16, 2011 at 5:16 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1">
+<div class="format_text" id="comment-body-1661">
+<p>Hi Robin,<br>
+Thanks for the answer, I don´t need the last version but I want to build the whole project  because I want to try with some compiler options, to see if the framework improve the performance, because my application is slow and I need to increase the FPS.<br>
+The parameters wich I want to compile the libraries are thease:<br>
+-O3<br>
+-mfpu=maverick<br>
+-mfloat-abi=softfp<br>
+-ftree-vectorize<br>
+-mfpu=neon<br>
+-DNS_BLOCK_ASSERTIONS=1</p>
+<p>On the  script  is only used “-O3″.<br>
+Also now, I have the same problem with the highgui  in the revision 7017, besides it is not giving problems when I try to compile the libraries directly in XCode, I don´t know why.<br>
+Thanks!!!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1661#respond" onclick="return addComment.moveForm(&quot;comment-body-1661&quot;, &quot;1661&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-1732">
+<span class="avatar"><img alt="" src="./BUILD_files/3692dd7b92873bc7b5f35b395760007c" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Gustavo</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1732" title="Permalink to this comment" rel="nofollow">December 20, 2011 at 5:19 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1732">
+<p>Solved, I just need to erase some code from the source code.<br>
+But It’s not worth it to use the compile parameters the application is slower than the original compilation.</p>
+<p>Good Luck</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1732#respond" onclick="return addComment.moveForm(&quot;comment-body-1732&quot;, &quot;1732&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-even depth-1 parent" id="comment-1735">
+<span class="avatar"><img alt="" src="./BUILD_files/3db91c15d10e8f45672b123594b746c0" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Ben</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1735" title="Permalink to this comment" rel="nofollow">December 20, 2011 at 10:43 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1 parent">
+<div class="format_text" id="comment-body-1735">
+<p>Hi Robin,<br>
+i got a conflict with the iOS Mapkit framework:<br>
+/Frameworks/MapKit.framework/Headers/MKGeometry.h:135: error: ‘isinf’ was not declared in this scope<br>
+If i delete the reference to the Mapkit framework, it’s working… any ideas? what can I do?<br>
+Thanks, Ben</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1735#respond" onclick="return addComment.moveForm(&quot;comment-body-1735&quot;, &quot;1735&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-1743">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1743" title="Permalink to this comment" rel="nofollow">December 20, 2011 at 6:17 pm</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-1743">
+<p>This appears to be a known problem when using MapKit in an Objective-C++ project. Note that it is nothing to do with OpenCV.</p>
+<p><code>isinf</code> is declared as a macro in math.h but in an Objective-C++ project, which #includes &lt;cmath&gt; , <code>isinf</code> is #undef’d and <code>std::isinf</code> is declared instead as a wrapper.</p>
+<p>A workaround is to add this line before you #import MKGeometry.h or any of the other MapKit headers:</p>
+<pre>using namespace std;</pre>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1743#respond" onclick="return addComment.moveForm(&quot;comment-body-1743&quot;, &quot;1743&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-1769">
+<span class="avatar"><img alt="" src="./BUILD_files/570218602ada8f2bb9eb6ca979253e42" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">wingnet</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1769" title="Permalink to this comment" rel="nofollow">December 22, 2011 at 4:21 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1769">
+<p>this is a great demo. thank you.<br>
+I just ported an opencv demo from windows to ios smoothly.</p>
+<p>however, there is a minor issue that cv::polylines can’t be compiled correctly. It seems that the 5th parameter(int isClosed) is the reason. I had to use cv::line to work around. wish u could take a look at this problem.</p>
+<p>waiting for your 3rd post about opencv on ios.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1769#respond" onclick="return addComment.moveForm(&quot;comment-body-1769&quot;, &quot;1769&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-1910">
+<span class="avatar"><img alt="" src="./BUILD_files/43f37bc1d27fd7da7656b79361ccd2e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">gis</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1910" title="Permalink to this comment" rel="nofollow">December 29, 2011 at 3:36 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-1910">
+<p>Hi. I followed your instructions. I am using opencv for descriptor extraction and homography. Everything works fine on simulator, but on device it has this error:<br>
+Ld /Users/attila/Library/Developer/Xcode/DerivedData/PushPop-elmkmflbmdvkqvaeocterigucivq/Build/Products/Debug-iphoneos/PushPop.app/PushPop normal armv7<br>
+    cd /Users/attila/GAOYAN/PushPop<br>
+    setenv IPHONEOS_DEPLOYMENT_TARGET 4.3<br>
+    setenv PATH “/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin:/Developer/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin”<br>
+    /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++-4.2 -arch armv7 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk -L/Users/attila/Library/Developer/Xcode/DerivedData/PushPop-elmkmflbmdvkqvaeocterigucivq/Build/Products/Debug-iphoneos -F/Users/attila/Library/Developer/Xcode/DerivedData/PushPop-elmkmflbmdvkqvaeocterigucivq/Build/Products/Debug-iphoneos -F/Users/attila/GAOYAN/PushPop/../../Downloads/aptogo-OpenCVForiPhone-717a18c -filelist /Users/attila/Library/Developer/Xcode/DerivedData/PushPop-elmkmflbmdvkqvaeocterigucivq/Build/Intermediates/PushPop.build/Debug-iphoneos/PushPop.build/Objects-normal/armv7/PushPop.LinkFileList -dead_strip -miphoneos-version-min=4.3 -lz -framework ImageIO -framework AVFoundation -framework OpenCV -framework QuartzCore -framework Accelerate -framework MobileCoreServices -framework UIKit -framework Foundation -framework CoreGraphics -o /Users/attila/Library/Developer/Xcode/DerivedData/PushPop-elmkmflbmdvkqvaeocterigucivq/Build/Products/Debug-iphoneos/PushPop.app/PushPop</p>
+<p>Undefined symbols for architecture armv7:<br>
+  “___divmodsi4″, referenced from:<br>
+      void cv::pyrDown_&lt;cv::FixPtCast, cv::NoVec &gt;(cv::Mat const&amp;, cv::Mat&amp;)in OpenCV(pyramids.o)<br>
+      void cv::pyrDown_&lt;cv::FixPtCast, cv::NoVec &gt;(cv::Mat const&amp;, cv::Mat&amp;)in OpenCV(pyramids.o)<br>
+      void cv::pyrDown_&lt;cv::FixPtCast, cv::NoVec &gt;(cv::Mat const&amp;, cv::Mat&amp;)in OpenCV(pyramids.o)<br>
+      void cv::pyrDown_&lt;cv::FltCast, cv::NoVec &gt;(cv::Mat const&amp;, cv::Mat&amp;)in OpenCV(pyramids.o)<br>
+      void cv::pyrDown_&lt;cv::FltCast, cv::NoVec &gt;(cv::Mat const&amp;, cv::Mat&amp;)in OpenCV(pyramids.o)<br>
+ld: symbol(s) not found for architecture armv7<br>
+collect2: ld returned 1 exit status</p>
+<p>Do you have any advice? Thanks a lot!!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1910#respond" onclick="return addComment.moveForm(&quot;comment-body-1910&quot;, &quot;1910&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-1911">
+<span class="avatar"><img alt="" src="./BUILD_files/43f37bc1d27fd7da7656b79361ccd2e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">gis</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-1911" title="Permalink to this comment" rel="nofollow">December 29, 2011 at 4:11 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-1911">
+<p>I traced that it is caused by this line:</p>
+<p>cvPyrDown(iplImage, small_image, CV_GAUSSIAN_5x5);</p>
+<p>I replaced it with cvResize to solve the link error problem. So it must be some issue with pyramids.o on device.</p>
+<p>Thanks!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=1911#respond" onclick="return addComment.moveForm(&quot;comment-body-1911&quot;, &quot;1911&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-2174">
+<span class="avatar"><img alt="" src="./BUILD_files/3856482c0febc2f82b4b9e1762311228" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Ivan</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2174" title="Permalink to this comment" rel="nofollow">January 14, 2012 at 3:53 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-2174">
+<p>I have the problem with opencv<br>
+i did everything mentioned above, however, every time i try to include some header file (eg. #include  ) i receive “no such file or directory” error. Can anyone help me with thia please?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2174#respond" onclick="return addComment.moveForm(&quot;comment-body-2174&quot;, &quot;2174&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-2324">
+<span class="avatar"><img alt="" src="./BUILD_files/a3b2b4330d125556c39e7ec00621bdcf" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">gary</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2324" title="Permalink to this comment" rel="nofollow">January 31, 2012 at 11:28 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2324">
+<p>@gis: i had the same problem – make sure you have added all the required ios frameworks (libz, imageIO, etc) after i added those, the build errors went away! thanks so much for putting this together, robin!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2324#respond" onclick="return addComment.moveForm(&quot;comment-body-2324&quot;, &quot;2324&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1 parent" id="comment-2340">
+<span class="avatar"><img alt="" src="./BUILD_files/1469c9ec00987eb327164896a42bf024" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Hari</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2340" title="Permalink to this comment" rel="nofollow">February 3, 2012 at 6:31 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1 parent">
+<div class="format_text" id="comment-body-2340">
+<p>I followed all your steps and it MOSTLY works fine, but there is a problem! Now I am able to use mat objects in my ‘.mm’ files but when I declare it in a header file like this…</p>
+<p>@interface TestViewController : UIViewController<br>
+{<br>
+   cv::Mat myMat;<br>
+}</p>
+<p>I get a compiler error: ‘Type name requires a specifier or qualifier’</p>
+<p>However the same error does not come in your openCVClient where you go<br>
+ cv::Mat _lastFrame;</p>
+<p>Why does this happen?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2340#respond" onclick="return addComment.moveForm(&quot;comment-body-2340&quot;, &quot;2340&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor even depth-2" id="comment-2341">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2341" title="Permalink to this comment" rel="nofollow">February 3, 2012 at 7:11 am</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor even depth-2">
+<div class="format_text" id="comment-body-2341">
+<p>If you use OpenCV types in a header file then you need to make sure that every source file that includes that header (directly or indirectly) is a ‘mm’ file. If you look back at the compiler messages output during the build  you will see which compilation unit triggered the error you are seeing.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2341#respond" onclick="return addComment.moveForm(&quot;comment-body-2341&quot;, &quot;2341&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-2350">
+<span class="avatar"><img alt="" src="./BUILD_files/1469c9ec00987eb327164896a42bf024" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">hari</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2350" title="Permalink to this comment" rel="nofollow">February 5, 2012 at 11:28 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2350">
+<p>Wow! I changed my app delegate to .mm and it worked. It’s such a sucky issue, would’ve never known if u hadn’t told. Thanks a lot!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2350#respond" onclick="return addComment.moveForm(&quot;comment-body-2350&quot;, &quot;2350&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-even depth-1" id="comment-2449">
+<span class="avatar"><img alt="" src="./BUILD_files/a0abcf11c97e8456470c6445126edec4" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">allan</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2449" title="Permalink to this comment" rel="nofollow">February 23, 2012 at 5:16 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1">
+<div class="format_text" id="comment-body-2449">
+<p>I have to write a comment to thank you for that post!</p>
+<p>That will help me a LOT to start using OpenCV on IOS. Thank you very much! The sample project is very well organized and the post is very well written. Thanks a lot from Brazil!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2449#respond" onclick="return addComment.moveForm(&quot;comment-body-2449&quot;, &quot;2449&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-2454">
+<span class="avatar"><img alt="" src="./BUILD_files/186eb22bc4b8a3ce01c586d23e828faf" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Lukas</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2454" title="Permalink to this comment" rel="nofollow">February 24, 2012 at 12:08 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2454">
+<p>Hi, somebody how saved image with cv:imwrite() in OpenCVClientViewController? I have image totaly rabish.</p>
+<p>Is it my bad or is it some serious problem?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2454#respond" onclick="return addComment.moveForm(&quot;comment-body-2454&quot;, &quot;2454&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-even depth-1 parent" id="comment-2488">
+<span class="avatar"><img alt="" src="./BUILD_files/43841ecf9a0a00eff254e135efd964c8" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Brian</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2488" title="Permalink to this comment" rel="nofollow">February 28, 2012 at 8:41 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1 parent">
+<div class="format_text" id="comment-body-2488">
+<p>Badass! This rocks, I have one question, how does OpenCV from your framework use the AVFoundation &amp; Core Video and the other apple frameworks when you open the video capture?  Did you create your own subclass of VideoCapture or something and where can I see this code, just curious.  Thanks!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2488#respond" onclick="return addComment.moveForm(&quot;comment-body-2488&quot;, &quot;2488&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-2503">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2503" title="Permalink to this comment" rel="nofollow">February 29, 2012 at 4:50 am</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-2503">
+<p>Later builds of OpenCV include support for video capture using AVFoundation. You can look at the OpenCV source to see how it is done. Take a look at the next article in the series to see a more flexible way of doing it by using AVFoundation directly.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2503#respond" onclick="return addComment.moveForm(&quot;comment-body-2503&quot;, &quot;2503&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-2526">
+<span class="avatar"><a href="http://www.whamix.com/" rel="nofollow"><img alt="" src="./BUILD_files/31c786ac60e85f00f896d46c8fa7a62b" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://www.whamix.com/" rel="external nofollow" class="url">Apurva</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2526" title="Permalink to this comment" rel="nofollow">March 3, 2012 at 11:33 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2526">
+<p>Fantastic job Robin! Thanks for sharing.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2526#respond" onclick="return addComment.moveForm(&quot;comment-body-2526&quot;, &quot;2526&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-2564">
+<span class="avatar"><img alt="" src="./BUILD_files/892ad507482b0bd1a5f796433468cd86" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">sam</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2564" title="Permalink to this comment" rel="nofollow">March 8, 2012 at 9:45 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-2564">
+<p>thanks very much. What’s the best build option  when Compile it ?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2564#respond" onclick="return addComment.moveForm(&quot;comment-body-2564&quot;, &quot;2564&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1 parent" id="comment-2574">
+<span class="avatar"><img alt="" src="./BUILD_files/6d05faa2ad3b26baaff67df33ac369a7" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">minghong.long</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2574" title="Permalink to this comment" rel="nofollow">March 11, 2012 at 3:02 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-2574">
+<p>I try to use some function about opencv<br>
+such like this  cvLine(tempMat,  cvPoint(10, 130),  cvPoint(300, 130), cvScalar(255, 255, 255, 0));<br>
+but I got an error<br>
+“No matching function for call to cvLine”<br>
+why is that happen?<br>
+I have cpoy the frameWork into my project.<br>
+Did I miss something ?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2574#respond" onclick="return addComment.moveForm(&quot;comment-body-2574&quot;, &quot;2574&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment odd alt depth-2 parent" id="comment-2608">
+<span class="avatar"><a href="http://fraserhardy.co.uk/" rel="nofollow"><img alt="" src="./BUILD_files/3916f4ede7db86fbfd5ffef8fc473fc2" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://fraserhardy.co.uk/" rel="external nofollow" class="url">Fraser Hardy</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2608" title="Permalink to this comment" rel="nofollow">March 14, 2012 at 10:43 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt depth-2 parent">
+<div class="format_text" id="comment-body-2608">
+<p>The the first argument requires a pointer to CvArr. </p>
+<p>If you CMD click on the offending function this is shown here:<br>
+cvLine( CvArr* img, CvPoint pt1, CvPoint pt2,<br>
+                     CvScalar color, int thickness CV_DEFAULT(1),<br>
+                     int line_type CV_DEFAULT(8), int shift CV_DEFAULT(0) );</p>
+<p>So your code should read:<br>
+cvLine(&amp;tempMat, cvPoint(10, 130), cvPoint(300, 130), cvScalar(255, 255, 255, 0));</p>
+<p>Hope that helps, </p>
+<p>Fraser</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2608#respond" onclick="return addComment.moveForm(&quot;comment-body-2608&quot;, &quot;2608&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment even depth-3" id="comment-2771">
+<span class="avatar"><img alt="" src="./BUILD_files/6d05faa2ad3b26baaff67df33ac369a7" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">longminghong</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2771" title="Permalink to this comment" rel="nofollow">March 30, 2012 at 12:42 pm</a></span>
+
+					</dt>
+					<dd class="comment even depth-3">
+<div class="format_text" id="comment-body-2771">
+<p>Thank you !!<br>
+It’s work well !<br>
+I haven’t use C For a Long time !!<br>
+Thank you again</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2771#respond" onclick="return addComment.moveForm(&quot;comment-body-2771&quot;, &quot;2771&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-2575">
+<span class="avatar"><img alt="" src="./BUILD_files/6d05faa2ad3b26baaff67df33ac369a7" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">minghong.long</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2575" title="Permalink to this comment" rel="nofollow">March 11, 2012 at 3:04 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-2575">
+<p>And I write it in your demo OpenCVClientAppDelegate.mm<br>
+God !<br>
+I have no idea How to fix it…..</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2575#respond" onclick="return addComment.moveForm(&quot;comment-body-2575&quot;, &quot;2575&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1" id="comment-2607">
+<span class="avatar"><a href="http://fraserhardy.co.uk/" rel="nofollow"><img alt="" src="./BUILD_files/3916f4ede7db86fbfd5ffef8fc473fc2" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://fraserhardy.co.uk/" rel="external nofollow" class="url">Fraser Hardy</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2607" title="Permalink to this comment" rel="nofollow">March 14, 2012 at 10:39 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2607">
+<p>Hi, </p>
+<p>I have a problem compiling when using certain functions in the openCV library. </p>
+<p>Please see my question on stack overflow: <a href="http://stackoverflow.com/questions/9586913/compile-error-when-using-cvminmaxloc-on-ios" rel="nofollow">http://stackoverflow.com/questions/9586913/compile-error-when-using-cvminmaxloc-on-ios</a></p>
+<p>Any help would be greatly appreciated. </p>
+<p>Thanks,<br>
+Fraser</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2607#respond" onclick="return addComment.moveForm(&quot;comment-body-2607&quot;, &quot;2607&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1" id="comment-2613">
+<span class="avatar"><img alt="" src="./BUILD_files/fae926e06e9c51d3f50fe6f161f2acb4" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Fenton Stone</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2613" title="Permalink to this comment" rel="nofollow">March 15, 2012 at 3:42 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1">
+<div class="format_text" id="comment-body-2613">
+<p>Hi Robin,</p>
+<p>I invoke the method cvCreateFGDStatModel in my project, it works fine on simulator, but crash on the devices, iPhone3GS and iPad2. However, if invoke cvCreateGaussianBGModel instead, it works fine on both simulator   and devices , but it comes out not what i want. </p>
+<p>Any help is appreciated.<br>
+Fenton</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2613#respond" onclick="return addComment.moveForm(&quot;comment-body-2613&quot;, &quot;2613&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-odd thread-alt depth-1 parent" id="comment-2614">
+<span class="avatar"><a href="http://fraserhardy.co.uk/" rel="nofollow"><img alt="" src="./BUILD_files/3916f4ede7db86fbfd5ffef8fc473fc2" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://fraserhardy.co.uk/" rel="external nofollow" class="url">Fraser Hardy</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2614" title="Permalink to this comment" rel="nofollow">March 15, 2012 at 6:20 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-2614">
+<p>I found a solution to my problem…. Someone has fixed the issue in this fork of the aptogo code: </p>
+<p><a href="https://github.com/Abai/OpenCVForiPhone" rel="nofollow">https://github.com/Abai/OpenCVForiPhone</a></p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2614#respond" onclick="return addComment.moveForm(&quot;comment-body-2614&quot;, &quot;2614&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor odd alt depth-2" id="comment-2615">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2615" title="Permalink to this comment" rel="nofollow">March 15, 2012 at 6:39 am</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+<div class="format_text" id="comment-body-2615">
+<p>Hi Fraser,</p>
+<p>This fix has now been merged into the aptogo GitHub repository.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2615#respond" onclick="return addComment.moveForm(&quot;comment-body-2615&quot;, &quot;2615&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment even thread-even depth-1" id="comment-2623">
+<span class="avatar"><img alt="" src="./BUILD_files/458aa4632cd1d827cf7d3fec6b070606" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">mark</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2623" title="Permalink to this comment" rel="nofollow">March 17, 2012 at 1:02 am</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1">
+<div class="format_text" id="comment-body-2623">
+<p>tried the sample code, it compiles ok &amp; runs on the simulator.   when i try to run it on my device, i get this error:</p>
+<p>error: failed to launch ‘/Users/mark/Library/Developer/Xcode/DerivedData/OpenCVClient-gjpbrvzbxqrhugaqfmixoikidouk/Build/Products/Debug-iphoneos/OpenCVClient.app/OpenCVClient’ — No such file or directory (/Users/mark/Library/Developer/Xcode/DerivedData/OpenCVClient-gjpbrvzbxqrhugaqfmixoikidouk/Build/Products/Debug-iphoneos/OpenCVClient.app/OpenCVClient)</p>
+<p>why is it looking for OpenCVClient?   why doesn’t it run the .app file?</p>
+<p>i’m using Xcode 4.3.1 and SDK 5.1</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2623#respond" onclick="return addComment.moveForm(&quot;comment-body-2623&quot;, &quot;2623&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-2741">
+<span class="avatar"><a href="http://toffa.com/" rel="nofollow"><img alt="" src="./BUILD_files/f171cb2cbf248170ecfcdc273520403e" class="avatar avatar-44 photo" height="44" width="44"></a></span>
+<span class="comment_author"><a href="http://toffa.com/" rel="external nofollow" class="url">Chris Jukes</a></span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2741" title="Permalink to this comment" rel="nofollow">March 28, 2012 at 12:08 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-2741">
+<p>Hi Robin, I’ve been using the OpenCV frameworks but need some guidance, have you done anything with Eigenfaces for recognition on iOS ?</p>
+<p>I’m trying to do face recognition but struggling with the PCA bit and especially projecting my sample vectors and then matching to the training set to match the person.</p>
+<p>any help appreciated.<br>
+Chris</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2741#respond" onclick="return addComment.moveForm(&quot;comment-body-2741&quot;, &quot;2741&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment even thread-even depth-1" id="comment-2769">
+<span class="avatar"><img alt="" src="./BUILD_files/6d05faa2ad3b26baaff67df33ac369a7" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">longminghong</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2769" title="Permalink to this comment" rel="nofollow">March 30, 2012 at 12:38 pm</a></span>
+
+					</dt>
+					<dd class="comment even thread-even depth-1">
+<div class="format_text" id="comment-body-2769">
+<p>Thank you !!<br>
+It’s work well  !<br>
+I haven’t use C For a Long time !!<br>
+Thank you again</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2769#respond" onclick="return addComment.moveForm(&quot;comment-body-2769&quot;, &quot;2769&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1 parent" id="comment-2830">
+<span class="avatar"><img alt="" src="./BUILD_files/da4fd127e2e601dfc2d97fea051e853a" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Andrew</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2830" title="Permalink to this comment" rel="nofollow">April 2, 2012 at 3:49 pm</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1 parent">
+<div class="format_text" id="comment-body-2830">
+<p>Wouldn’t dynamic framework get the app rejected from iOS AppStore?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2830#respond" onclick="return addComment.moveForm(&quot;comment-body-2830&quot;, &quot;2830&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment byuser comment-author-admin bypostauthor even depth-2" id="comment-2831">
+<span class="avatar"><img alt="" src="./BUILD_files/5e8045e87af8ae378fcf8057d99ac0e3" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Robin Summerhill</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2831" title="Permalink to this comment" rel="nofollow">April 2, 2012 at 5:47 pm</a></span>
+
+					</dt>
+					<dd class="comment byuser comment-author-admin bypostauthor even depth-2">
+<div class="format_text" id="comment-body-2831">
+<p>Hi Andrew,</p>
+<p>It’s not a dynamic framework. It’s a static library wrapped up as a framework to make it easy to add to your Xcode project. iOS has no provision for custom dynamic frameworks so you couldn’t use one even if you wanted to.</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2831#respond" onclick="return addComment.moveForm(&quot;comment-body-2831&quot;, &quot;2831&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-even depth-1 parent" id="comment-2907">
+<span class="avatar"><img alt="" src="./BUILD_files/f7118d0bc7a122844a5786d9f65cfe0b" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Jason</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2907" title="Permalink to this comment" rel="nofollow">April 9, 2012 at 7:20 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-even depth-1 parent">
+<div class="format_text" id="comment-body-2907">
+<p>Thanks a lot for the tutorial!  The example project works great.</p>
+<p>However, I have created my own project and copied the framework for opencv.  When I type cv:: I don’t get the list of functions and such for cv as I can in your project.  This only happens when attempting in a .h file but works fine in a .mm file.  In the example project this works in both files.  I believe I am missing something very obvious but really can’t see what that is.  Any help is appreciated.  Thanks!</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2907#respond" onclick="return addComment.moveForm(&quot;comment-body-2907&quot;, &quot;2907&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					<dl class="children">
+					<dt class="comment even depth-2" id="comment-2908">
+<span class="avatar"><img alt="" src="./BUILD_files/f7118d0bc7a122844a5786d9f65cfe0b" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Jason</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-2908" title="Permalink to this comment" rel="nofollow">April 9, 2012 at 7:39 am</a></span>
+
+					</dt>
+					<dd class="comment even depth-2">
+<div class="format_text" id="comment-body-2908">
+<p>I was able to solve this by changing the .h to .hpp</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=2908#respond" onclick="return addComment.moveForm(&quot;comment-body-2908&quot;, &quot;2908&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+					</dl>
+					</dd>
+					<dt class="comment odd alt thread-odd thread-alt depth-1" id="comment-3457">
+<span class="avatar"><img alt="" src="./BUILD_files/10960ba0f305803a1cdc7cd6188d643b" class="avatar avatar-44 photo" height="44" width="44"></span>
+<span class="comment_author">Joshua Noble</span>
+<span class="comment_time"><a href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#comment-3457" title="Permalink to this comment" rel="nofollow">April 25, 2012 at 12:13 am</a></span>
+
+					</dt>
+					<dd class="comment odd alt thread-odd thread-alt depth-1">
+<div class="format_text" id="comment-body-3457">
+<p>When I try to run this script, I get an error:</p>
+<p>Build settings from command line:<br>
+    SDKROOT = iphonesimulator5.1</p>
+<p>xcodebuild: error: Unable to read project ‘OpenCV.xcode’.<br>
+	Reason: Project file ‘OpenCV’ was written by an unsupported Xcode version (39)</p>
+<p>Curious if anyone else has seen it?</p>
+<p class="reply"><a rel="nofollow" class="comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/?replytocom=3457#respond" onclick="return addComment.moveForm(&quot;comment-body-3457&quot;, &quot;3457&quot;, &quot;respond&quot;, &quot;417&quot;)">Reply</a></p>
+</div>
+					</dd>
+				</dl>
+				<div id="respond">
+					<div id="respond_intro">
+<a rel="nofollow" id="cancel-comment-reply-link" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#respond" style="display:none;">Cancel reply</a>						<p>Leave a Comment</p>
+					</div>
+					<form action="http://aptogo.co.uk/wp-comments-post.php" method="post" id="commentform">
+						<p><input class="text_input" type="text" name="author" id="author" value="" tabindex="1" aria-required="true"><label for="author">Name <span class="required" title="Required">*</span></label></p>
+						<p><input class="text_input" type="text" name="email" id="email" value="" tabindex="2" aria-required="true"><label for="email">E-mail <span class="required" title="Required">*</span></label></p>
+						<p><input class="text_input" type="text" name="url" id="url" value="" tabindex="3"><label for="url">Website</label></p>
+						<p class="comment_box">
+							<textarea name="comment" id="comment" tabindex="4" cols="40" rows="8"></textarea>
+						</p>
+						<p class="remove_bottom_margin">
+							<input name="submit" class="form_submit" type="submit" id="submit" tabindex="5" value="Submit">
+<input type="hidden" name="comment_post_ID" value="417" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+						</p>
+					</form>
+				</div>
+				<div id="trackbacks_intro" class="comments_intro">
+					<p><span class="bracket">{</span> <span>3</span> trackbacks <span class="bracket">}</span></p>
+				</div>
+
+				<ul id="trackback_list">
+					<li><a href="http://aptogo.co.uk/2011/09/face-tracking/" rel="nofollow">Computer vision with iOS Part 2: Face tracking in live video — Aptogo</a></li>
+					<li><a href="http://www.iappnow.com/2012/02/03/opencv-import-does-not-compile-in-ios/" rel="nofollow">OpenCV import does not compile in iOS</a></li>
+					<li><a href="http://aptogo.co.uk/2012/01/jump-into-our-new-tech-series-computer-vision/" rel="nofollow">Jump into our new tech series – Computer Vision — Aptogo</a></li>
+				</ul>
+			</div>
+					<div class="prev_next post_nav">
+						<p class="previous">Previous post: <a href="http://aptogo.co.uk/2011/08/no-fuss-reflections/" rel="prev">No-fuss reflections – generating reflections the easy way in iOS</a></p>
+						<p>Next post: <a href="http://aptogo.co.uk/2011/09/face-tracking/" rel="next">Computer vision with iOS Part 2: Face tracking in live video</a></p>
+					</div>
+		</div>
+
+		<div id="sidebars">
+			<div id="sidebar_1" class="sidebar">
+				<ul class="sidebar_list">
+<li class="widget thesis_widget_search" id="search">
+<h3>Search Aptogo</h3>
+<form method="get" class="search_form" action="http://aptogo.co.uk/">
+	<p>
+		<input class="text_input" type="text" value="To search, type and hit enter" name="s" id="s" onfocus="if (this.value == &#39;To search, type and hit enter&#39;) {this.value = &#39;&#39;;}" onblur="if (this.value == &#39;&#39;) {this.value = &#39;To search, type and hit enter&#39;;}">
+		<input type="hidden" id="searchsubmit" value="Search">
+	</p>
+</form>
+</li>
+<li class="widget widget_killer_recent_entries" id="widget_killer_recent_entries-2">
+<h3>Recent Articles</h3>
+<ul>
+	<li><a href="http://aptogo.co.uk/2011/09/face-tracking/" title="Click to read Computer vision with iOS Part 2: Face tracking in live video" rel="bookmark">Computer vision with iOS Part 2: Face tracking in live video</a></li>
+	<li><a href="./BUILD_files/BUILD.html" title="Click to read Computer vision with iOS Part 1: Building an OpenCV framework" rel="bookmark">Computer vision with iOS Part 1: Building an OpenCV framework</a></li>
+	<li><a href="http://aptogo.co.uk/2011/08/no-fuss-reflections/" title="Click to read No-fuss reflections – generating reflections the easy way in iOS" rel="bookmark">No-fuss reflections – generating reflections the easy way in iOS</a></li>
+	<li><a href="http://aptogo.co.uk/2010/09/importing-photos/" title="Click to read How to import photos into the iPhone Simulator" rel="bookmark">How to import photos into the iPhone Simulator</a></li>
+	<li><a href="http://aptogo.co.uk/2010/07/protecting-resources/" title="Click to read Protecting resources in iPhone and iPad apps" rel="bookmark">Protecting resources in iPhone and iPad apps</a></li>
+</ul>
+</li>
+<li class="widget widget_twitter" id="twitter-3"><div><h3><a class="twitterwidget twitterwidget-title" title="Twitter: aptogo" href="http://twitter.com/aptogo">Twitter: @aptogo</a></h3><ul><li><span class="entry-content">Showtime iPhone app from Aptogo is on sale for a limited time. Free your photos! <a href="http://t.co/2sn8nJ5O">http://t.co/2sn8nJ5O</a></span> <span class="entry-meta"><span class="time-meta"><a href="http://twitter.com/aptogo/statuses/1.27797504753E+17">2011/10/22</a></span> <span class="from-meta">from web</span></span></li><li><span class="entry-content">Read our latest developer article! Computer vision with iOS: Face tracking in live video <a href="http://t.co/ofGkLcJb">http://t.co/ofGkLcJb</a></span> <span class="entry-meta"><span class="time-meta"><a href="http://twitter.com/aptogo/statuses/1.1987376105E+17">2011/09/30</a></span> <span class="from-meta">from web</span></span></li><li><span class="entry-content">Read our latest developer article! Computer vision with iOS: Building an OpenCV framework - <a href="http://t.co/Cf51tgx">http://t.co/Cf51tgx</a></span> <span class="entry-meta"><span class="time-meta"><a href="http://twitter.com/aptogo/statuses/1.11543711871E+17">2011/09/07</a></span> <span class="from-meta">from web</span></span></li><li><span class="entry-content">Read our latest developer article! No-fuss reflections – generating reflections the easy way in iOS <a href="http://t.co/20FRy0V">http://t.co/20FRy0V</a></span> <span class="entry-meta"><span class="time-meta"><a href="http://twitter.com/aptogo/statuses/1.06799622961E+17">2011/08/25</a></span> <span class="from-meta">from web</span></span></li><li><span class="entry-content"><a href="http://twitter.com/appannie" class="twitter-user">@appannie</a> Are you guys all at WWDC? No updates to stats since June 5.</span> <span class="entry-meta"><span class="time-meta"><a href="http://twitter.com/aptogo/statuses/7.85520368866E+16">2011/06/08</a></span> <span class="from-meta">from web</span><span class="in-reply-to-meta"><a href="http://twitter.com/appannie/statuses/" class="reply-to">in reply to appannie</a></span></span></li></ul></div></li>				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div id="footer_area" class="full_width">
+<div class="page">
+	<div id="footer">
+Copyright © 2010 Aptogo Limited. All rights reserved.
+<script type="text/javascript" src="./BUILD_files/jquery.form.js"></script>
+<script type="text/javascript" src="./BUILD_files/scripts.js"></script>
+	</div>
+</div>
+</div>
+<!--[if lte IE 8]>
+<div id="ie_clear"></div>
+<![endif]-->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-669181-5']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript" src="./BUILD_files/plusone.js" gapi_processed="true"></script>
+
+<div id="stimuli_overlay" style="display: none; "></div><div id="stimuli_lightbox" style="display: none; "><div id="stimuli_outerImageContainer" style="width: 250px; height: 250px; "><div id="stimuli_imageContainer"><img id="stimuli_lightboxImage"><div id="stimuli_hoverNav"><a id="stimuli_prevLink" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#"></a><a id="stimuli_nextLink" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#"></a></div><div id="stimuli_loading"><a id="stimuli_loadingLink" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#"></a></div></div></div><div id="stimuli_imageDataContainer"><div id="stimuli_imageData"><div id="stimuli_imageDetails"><span id="stimuli_caption"></span><span id="stimuli_numberDisplay"></span></div><div id="stimuli_bottomNav"><a id="stimuli_bottomNavClose" href="http://aptogo.co.uk/2011/09/opencv-framework-for-ios/#"></a></div></div></div></div></body></html>

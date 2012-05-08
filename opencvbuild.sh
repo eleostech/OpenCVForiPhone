@@ -86,11 +86,15 @@ xcodebuild -sdk iphonesimulator -configuration $CONFIGURATION -target install
 cp -f $TEMP_BUILD_DIR/3rdparty/lib/$CONFIGURATION/*.a $IPHONE_SIMULATOR_INSTALL_DIR/lib/
 cp -f $TEMP_BUILD_DIR/lib/$CONFIGURATION/*.a $IPHONE_SIMULATOR_INSTALL_DIR/lib/
 
+echo "Removing toolchain and architecture caches"
+cmake -UCMAKE_TOOLCHAIN_FILE -UCMAKE_OSX_ARCHITECTURES $SRC_DIR
+rm CMakeCache.txt
+
 ################################################################################
 # Build for device
 echo "Building for iphone device"
 cmake -GXcode \
-	  -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/ios/cmake/Toolchains/Toolchain-iPhoneDevice_Xcode.cmake \
+	  -DCMAKE_TOOLCHAIN_FILE=$SRC_DIR/ios/cmake/Toolchains/Toolchain-iPhoneOS_Xcode.cmake \
 	  -DCMAKE_INSTALL_PREFIX=$IPHONE_OS_INSTALL_DIR \
 	  -DOPENCV_BUILD_3RDPARTY_LIBS=YES \
       -DCMAKE_XCODE_ATTRIBUTE_GCC_VERSION="com.apple.compilers.llvmgcc42" \

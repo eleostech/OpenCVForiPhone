@@ -1,0 +1,388 @@
+/*
+File:			custom.css
+Description:	Custom styles for Thesis
+
+BASIC USAGE:
+
+If you have enabled the custom stylesheet in the Thesis options panel, the <body> tag 
+will be appended with the "custom" class, like so: <body class="custom">. You can use 
+the "custom" class to override *any* CSS declarations contained in the style.css file.
+
+For example, if you wish to change the default link color to green, you would add the 
+following declarations to this file:
+
+	.custom a, .custom a:visited { color: #090; }	<--- This makes links green
+	.custom a:hover { color: #00f; }	<--- This makes links blue when you mouse over them
+
+WHY THIS WORKS:
+
+By using the "custom" class, you are creating more specific CSS declarations for HTML
+elements. CSS styling is applied through rules of specificity, and because declarations
+prepended with .custom are more specific, they get applied when the page is rendered!
+
+More information about styling your Thesis installation using this file can be found
+in the User's Guide:
+	http://diythemes.com/thesis/rtfm/customizing-thesis-with-customcss/
+*/
+
+/* Header area */
+.custom #header_area {
+	background: url(images/bg_header_area.jpg) transparent repeat-x;
+}
+
+.custom #header_area div.page {
+	position: relative;
+	background-color:transparent;
+}
+
+/* Header text */
+.custom #header {
+	padding:0;
+	height:75px;
+}
+
+.custom #logo {
+	
+}
+
+.custom #logo a {
+	display:block;
+	height:75px;
+	width:196px;
+	line-height:75px;
+	color:#c22d2f;
+	text-shadow: black -1px -1px 0px;
+	background: url(images/bg_aptogo_logo.png) left center no-repeat;
+	text-indent: -9999px;
+}
+
+/* Main menu */
+.custom #main_menu {
+	min-height:140px;
+	position:relative;
+}
+
+.custom #main_menu h1 {
+	font-size: 28px;
+	font-weight: bold;
+	text-shadow: #212B40 1px 1px 0px;
+	color:white;
+	padding-top:40px;
+	letter-spacing: -1px;
+}
+
+.custom #main_menu h2 {
+	font-size:16px;
+	color:#8898BA;
+	text-shadow: #1F283D -1px -1px 0px;
+	padding-top: 5px;
+}
+
+.custom ul.mymenu {
+	float:right;
+	border: 0;
+	position:inherit;
+	list-style: none;
+	height:50px;
+	margin-top:81px;
+}
+
+.custom.home ul.mymenu {
+	margin-top:341px;
+}
+
+.custom li.mytab, .custom li.mytab:hover {
+	
+	float:left;
+}
+
+.custom li.mytab a, .custom li.mytab a:hover  {
+	display: block;
+	outline: none;
+	padding:0 20px;
+	border:0;
+	text-transform: none;
+	font-size: 16px;
+	color: #8898BA;
+	height:50px;
+	line-height: 42px;
+	text-shadow: #1F283D -1px -1px 0px;
+	letter-spacing: normal;
+}
+
+.custom li.mytab.current, .custom li.mytab.current-parent, .custom li.mytab.current:hover, .custom li.mytab.current-parent:hover  {
+	background: url(images/bg_menu_li.png) no-repeat;
+	background-position: 100% 100%;
+}
+
+.custom li.mytab.current a, .custom li.mytab.current-parent a, .custom li.mytab.current a:hover, .custom li.mytab.current-parent a:hover{
+	background: url(images/bg_menu_li_a.png) no-repeat;
+	background-position: -2px 100%;
+	color: #444;
+	text-shadow: none;
+}
+
+.custom li.mytab:hover {
+	background: url(images/bg_menu_li.png) no-repeat;
+	background-position: 100% 50%;
+}
+
+.custom li.mytab a:hover {
+	background: url(images/bg_menu_li_a.png) no-repeat;
+	background-position: -2px 50%;
+	border: none;
+	color: white;
+}
+
+/* Submenu */
+.custom #sub_menu {
+	height:77px;
+}
+
+.custom #sub_menu h2 {
+	color: #777;
+	font-size: 16px;
+	line-height: 77px;
+	float:left;
+}
+
+.custom ul.submenu {
+	height:76px;
+	float:right;
+	margin-top:14px;
+}
+
+.custom ul.submenu li {
+	float: left;
+	display: block;
+	list-style-type: none;
+	border-left: 1px solid #ccc;
+	height:40px;
+	margin:0 10px;
+}
+
+.custom ul.submenu li a {
+	color:#555;
+	font-size: 20px;
+	font-weight:bold;
+	display:block;
+	height:40px;
+	line-height: 40px;
+	padding-left:20px;
+	letter-spacing: -1px;
+}
+
+
+
+/* User panel */
+.custom #user_panel {
+	position: absolute;
+	top:17px;
+	right:0px;
+}
+
+.custom #user_panel li {
+	display: block;
+	float:left;
+	margin-left:10px;
+}
+
+.custom #user_panel li a {
+	background:#101728;
+	display:block;
+	border-top:1px solid #0b1120;
+	border-left:1px solid #0b1120;
+	border-bottom:1px solid #1b2640;
+	border-right:1px solid #1b2640; 
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	font-size:12px;
+	color:white;
+	height:38px;
+	line-height: 38px;
+	padding:0 10px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+}
+
+.custom #user_panel li a:hover { background-color:#354567; border-left-color:#455680; border-top-color:#455680; border-bottom-color:#0f1523; border-right-color:#0f1523; }
+      
+.custom #user_panel li.rss a {
+	padding-right: 40px;
+	background-image: url(images/feed-icon-28x28.png);
+	background-repeat: no-repeat;
+	background-position: 95% 50%;
+}
+
+/* Home page header area */
+.custom.home #header_area {
+	background: url(images/bg_feature_header_area.jpg) transparent repeat-x;
+}
+
+.custom #feature_box {
+	height:476px;
+	background: transparent;
+}
+
+.custom #feature_text {
+	position:absolute;
+	width:100%;
+	height: 300px;
+	top:40px;
+	right:0;
+	background: url(images/bg_feature_text.png) top right no-repeat;
+	text-indent:-9999px;
+}
+
+.custom #main_menu #feature_text h2 {
+	font-size: 28px;
+	font-weight: bold;
+	text-shadow: #212B40 1px 1px 0px;
+	color:white;
+	letter-spacing: -1px;
+}
+
+.custom #main_menu #feature_text p, .custom #main_menu #feature_text li {
+	font-size:16px;
+	color:#8898BA;
+	text-shadow: #1F283D -1px -1px 0px;
+	padding-top: 5px;
+}
+
+.custom #main_menu #feature_text li {
+	color:white;
+}
+
+.custom #main_menu #feature_text ul {
+	margin-top: 1em;
+	list-style: none;
+}
+
+/* -------- Content -------*/
+body.custom.page div.headline_area {
+	display:none;
+}
+
+
+cite {
+	float:right;
+}
+
+/* table of contents */
+a.tocentry {
+    text-decoration: none;
+    color: #49595F;
+}
+
+/* tables */
+
+body.custom table {
+    margin-bottom:1em;
+    width: 100%;
+}
+
+body.custom td {
+    background-color: #eee;
+    padding: 0.2em 1em;
+}
+
+body.custom thead td {
+    color: white;
+    background-color: #8898BA;
+}
+
+/* Portfolio items */
+.custom div.portfolio-item {
+	display:inline-block;
+}
+
+.custom div.portfolio-item:after {
+ display:block; 
+ visibility:hidden; 
+ clear:both; 
+ height:0; 
+ content: "."; 
+}
+
+/* WP-Syntax code styling */
+.custom div.wp_syntax pre {
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+/* Content column box */
+.custom div.columns {
+	border-top: 2px solid;
+	border-bottom: 2px solid;
+	border-color:#ccc;
+	padding:0.7em 0;
+	margin-bottom: 1em;
+	
+}
+
+.custom div.column-1 {
+	float:left;
+	width:48%;
+	padding-right:3%;
+}
+
+.custom div.column-2 {
+	float:left;
+	width:48%;
+}
+
+.clear {
+ display:inline-block;
+}
+.clear:after {
+ display:block; 
+ visibility:hidden; 
+ clear:both; 
+ height:0; 
+ content: "."; 
+}
+
+/* Contact page */
+
+body.custom.contact textarea, body.custom.support textarea {
+	width:96%;
+}
+
+/* Post box */
+.custom div.post_box {
+	margin-left:0;
+}
+
+
+
+
+/* RSS link */
+.custom a.rss {
+	display: block;
+	width:14px;
+	height:14px;
+	float:right;
+	background: url(images/feed-icon-14x14.png) no-repeat;
+	text-indent: -9999px;
+}
+
+
+/*------------------- Sidebars --------------------- */
+.custom .sidebar h3 {
+	font-variant: normal;
+}
+
+/* Twitter feed */
+.custom li.widget_twitter span.from-meta {
+	display: none;
+}
+
+.custom li.widget_twitter ul li {
+	padding-bottom: 0.7em;
+	border-bottom: 2px dotted #CDE0FE;
+}
+
+.custom.hiderecentarticles li.widget_killer_recent_entries {
+    display:none;
+}
