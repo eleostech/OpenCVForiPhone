@@ -13,21 +13,9 @@ This fork of OpenCVForiPhone includes patches to support both armv6/armv7 and ar
 
 This repository is primarily just CMake build scripts that make OpenCV build for iPhone. You need to supply this repository with a copy of the OpenCV source tree before attempting the build.
 
-Check this repository out:
+Check this repository out, including OpenCV's repository as a submodule:
 
-    git clone git@github.com:eleostech/OpenCVForiPhone.git
-
-Supply this repository with a version of OpenCV.
-
-    cd OpenCVForiPhone/opencv
-
-Download this version:
-
-    svn co http://code.opencv.org/svn/opencv/tags/2.4.0/opencv .
-
-If you can't use SVN, download this version:
-
-    http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.4.0/OpenCV-2.4.0.tar.bz2/download
+    git clone --recursive git@github.com:eleostech/OpenCVForiPhone.git
 
 Patch opencv to build for armv6 or armv7s, whichever you like:
 
