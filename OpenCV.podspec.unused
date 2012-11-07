@@ -1,0 +1,41 @@
+Pod::Spec.new do |s|
+  s.name         = "OpenCV"
+  s.version      = "1.0.0"
+  s.summary      = "An iPhone version of the OpenCV computer vision library."
+  s.homepage     = "http://EXAMPLE/OpenCV"
+  s.license      = 'MIT (example)'
+  s.author       = { "aptogo" => "robin@aptogo.co.uk" }
+  s.source       = { :git => "https://github.com/eleostech/OpenCVForiPhone.git", :branch => "armv6-support" }
+
+  s.platform     = :ios, '4.2'
+
+  s.header_mappings_dir = 'OpenCV.framework/Headers'
+  s.source_files = 'OpenCV.framework/Headers/**/*.{h,hpp}', 'OpenCV.framework/Headers/**/**/*.{h,hpp}'
+  #s.library = 'OpenCV'
+  
+  # Specify a list of frameworks that the application needs to link
+  # against for this Pod to work.
+  #
+  # s.framework  = 'SomeFramework'
+  # s.frameworks = 'SomeFramework', 'AnotherFramework'
+
+  # Specify a list of libraries that the application needs to link
+  # against for this Pod to work.
+  #
+  # s.library   = 'iconv'
+  # s.libraries = 'iconv', 'xml2'
+
+  # If this Pod uses ARC, specify it like so.
+  #
+  # s.requires_arc = true
+
+  # If you need to specify any other build settings, add them to the
+  # xcconfig hash.
+  #
+  s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(SRCROOT)/../OpenCVForiPhone' }
+  s.framework = 'OpenCV'
+
+  # Finally, specify any Pods that this Pod depends on.
+  #
+  # s.dependency 'JSONKit', '~> 1.4'
+end
